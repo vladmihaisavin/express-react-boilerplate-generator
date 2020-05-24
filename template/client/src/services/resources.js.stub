@@ -1,0 +1,13 @@
+import httpClient from './httpClient'
+
+export async function createResource(body) {
+  return httpClient.post('/###resourcePlural###', body)
+}
+
+export async function updateResource(###resourceSingular###Id, body) {
+  return httpClient.put(`/###resourcePlural###/${###resourceSingular###Id}`, body)
+}
+
+export async function deleteResource(###resourceSingular###Id) {
+  return httpClient.delete(`/###resourcePlural###/${###resourceSingular###Id}`)
+}

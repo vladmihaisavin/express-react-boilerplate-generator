@@ -1,0 +1,54 @@
+const { Router } = require('express')
+const validate = require('express-validation')
+const validationRules = require('../validation/###resourcePlural###')
+
+module.exports = (###resourceSingular###Repository) => {
+  const app = new Router()
+
+  app.get('/', async (req, res) => {
+    try {
+      const ###resourcePlural### = await ###resourceSingular###Repository.list()
+      return res.status(200).json(###resourcePlural###)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  app.post('/', validate(validationRules.store), async (req, res) => {
+    try {
+      const results = await ###resourceSingular###Repository.store(req.body)
+      return res.status(201).json({ id: results.insertId })
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  app.get('/:id', async (req, res) => {
+    try {
+      const ###resourceSingular### = await ###resourceSingular###Repository.getById(req.params.id)
+      return res.status(200).json(###resourceSingular###)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  app.put('/:id', validate(validationRules.update), async (req, res) => {
+    try {
+      await ###resourceSingular###Repository.update(req.params.id, req.body)
+      return res.sendStatus(204)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+  
+  app.delete('/:id', async (req, res) => {
+    try {
+      await ###resourceSingular###Repository.destroy(req.params.id)
+      return res.sendStatus(204)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  return app
+}

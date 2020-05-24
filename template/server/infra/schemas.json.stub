@@ -1,0 +1,38 @@
+//Data taken from DB parser module 
+
+Example output:
+[
+  {
+    "tableName": "users",
+    "tableSchema": [
+      {
+        "name": "id",
+        "type": "INT AUTO_INCREMENT PRIMARY KEY"
+      },
+      {
+        "name": "type",
+        "type": "VARCHAR(255) DEFAULT \"guest\""
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(255) NOT NULL"
+      },
+      {
+        "name": "email",
+        "type": "VARCHAR(255) NOT NULL"
+      },
+      {
+        "name": "password",
+        "type": "VARCHAR(255)"
+      },
+      {
+        "name": "createdAt",
+        "type": "TIMESTAMP"
+      },
+      {
+        "name": "updatedAt",
+        "type": "TIMESTAMP"
+      }
+    ]
+  }
+]

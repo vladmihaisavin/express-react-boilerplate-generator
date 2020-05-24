@@ -1,0 +1,95 @@
+const ###resourceSingular###Model = require('../models/###resourceSingular###.json')
+const { hashPassword } = require('../helpers/bcrypt')
+const { getCurrentTimestamp } = require('../helpers/moment')
+const { generateSimpleFilterObject, prepareResults } = require('../helpers/mysqlClient')
+
+module.exports = (mysqlClient) => {
+  const list = async () => {
+    try {
+      return prepareResults(await mysqlClient.list(###resourceSingular###Model.tableName, ###resourceSingular###Model.fields.projection))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const store = async (body) => {
+    try {
+      const now = getCurrentTimestamp()
+      body.password = await hashPassword(body.password)
+      body.createdAt = now
+      body.updatedAt = now
+      return prepareResults(await mysqlClient.store(###resourceSingular###Model.tableName, body))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const getById = async (id) => {
+    try {
+      return prepareResults(await mysqlClient.fetch(
+        ###resourceSingular###Model.tableName,
+        generateSimpleFilterObject(['id'], id),
+        ###resourceSingular###Model.fields.projection
+      ))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const getByEmail = async (email) => {
+    try {
+      return prepareResults(await mysqlClient.fetch(
+        ###resourceSingular###Model.tableName,
+        generateSimpleFilterObject(['email'], email),
+        [
+          ...###resourceSingular###Model.fields.projection,
+          'password'
+        ]
+      ))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const update = async (id, body) => {
+    try {
+      if (body.password) {
+        body.password = await hashPassword(body.password)
+      }
+      body.updatedAt = getCurrentTimestamp()
+      return prepareResults(await mysqlClient.update(
+        ###resourceSingular###Model.tableName,
+        body,
+        generateSimpleFilterObject(['id'], id),
+      ))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const destroy = async (id) => {
+    try {
+      return prepareResults(await mysqlClient.destroy(
+        ###resourceSingular###Model.tableName,
+        generateSimpleFilterObject(['id'], id),
+      ))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  return {
+    list,
+    store,
+    getById,
+    getByEmail,
+    update,
+    destroy
+  }
+}

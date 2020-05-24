@@ -1,0 +1,24 @@
+{
+  "resourceName": "user",
+  "resourceUrl": "users",
+  "listProperties": [
+    //{ "id": "name", "numeric": false, "disablePadding": true, "label": "Name" },
+    //{ "id": "email", "numeric": false, "disablePadding": false, "label": "Email" },
+    //{ "id": "type", "numeric": false, "disablePadding": false, "label": "Type" },
+    //{ "id": "createdAt", "numeric": false, "disablePadding": false, "label": "Created At", "type": "datetime-local" }
+  ],
+  "formProperties": [
+    //{ "id": "name", "label": "Name" },
+    //{ "id": "email", "label": "Email" },
+    //{ "id": "type", "label": "Type" },
+    //{ "id": "password", "label": "Password", "type": "password" }
+  ],
+  "formFields": [
+    //"name",
+    //"email",
+    //"type",
+    //"password"
+  ]
+}
+
+//Data taken from DB parser module
