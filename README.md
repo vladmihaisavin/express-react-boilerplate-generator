@@ -1,5 +1,15 @@
 # express-react-boilerplate-generator
 
+# How to use
+## CLI
+1. Go to a directory where you want to start a project;
+2. Run `create-express-react-app` in your terminal or command prompt;
+3. Type a project name when your are prompted;
+4. Add the connection details to the database, when prompted (optional);
+5. Open the directory with that project name
+6. Follow the instructions from the README file
+7. Happy coding!
+
 # Files to be customly generated:
 
 ## Server
