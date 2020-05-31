@@ -1,0 +1,3 @@
+[submodule "express-react-boilerplate"]
+	path = express-react-boilerplate
+	url = https://github.com/vladmihaisavin/express-react-boilerplate.git
