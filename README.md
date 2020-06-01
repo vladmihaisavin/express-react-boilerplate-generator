@@ -14,38 +14,38 @@
 
 ## Server
 ### Necessary
-/src/controllers/users.js
+/server/src/controllers/users.js
 
-/src/models/user.js
+/server/src/models/user.json
 
-/src/repositories/user.js
+/server/src/repositories/user.js
 
-/src/validation/users.js
+/server/src/validation/users.js
 
-/src/routes.js
+/server/src/routes.js
 
 ### Optional
-/infra/schemas.js
+/server/infra/schemas.js
 
-package.json
+/server/package.json
 
 
 ## Client
 ### Necessary
-/src/index.js -> router
+/server/src/index.js -> router
 
-/src/components/sections/Users.jsx
+/server/src/components/sections/Users.jsx
 
-/src/components/sections/UserForm.jsx
+/server/src/components/sections/UserForm.jsx
 
-/src/components/structure/Navigator.jsx
+/server/src/components/structure/Navigator.jsx
 
-/src/services/users.js
+/server/src/services/users.js
 
-/src/static/userResource.json
+/server/src/static/userResource.json
 
 ### Optional
-package.json
+/server/package.json
 
 
 The other files generated are general, being part of the boilerplate.

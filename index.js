@@ -3,7 +3,8 @@
 const CURR_DIR = process.cwd()
 const inquirer = require('inquirer')
 const fs = require('fs')
-const { generateProject } = require('./src')
+const { generateProject } = require('./src/index')
+const { getFilesToBeReplaced } = require('./src/constants')
 
 const setProjectName = () => [
   {
@@ -39,6 +40,7 @@ inquirer.prompt(setProjectName())
   .then(answers => {
     const projectName = answers['projectName']
     const templatePath = `${__dirname}/express-react-boilerplate`
+    const filesToBeReplaced = getFilesToBeReplaced(templatePath)
     const databaseOptions = {
       type: answers['database']
     }
@@ -46,10 +48,11 @@ inquirer.prompt(setProjectName())
     fs.mkdirSync(`${CURR_DIR}/${projectName}`)
 
     generateProject({
-      templatePath,
-      projectPath: projectName,
-      databaseOptions,
-      currentDirectory: CURR_DIR
+      scanPath: templatePath,
+      outputPath: projectName,
+      currentDirectory: CURR_DIR,
+      filesToBeReplaced,
+      databaseOptions
     })
   })
   .catch((err) => console.error(err))

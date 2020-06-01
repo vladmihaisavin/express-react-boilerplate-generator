@@ -1,29 +1,28 @@
 const fs = require('fs')
 
-const generateProject = ({ templatePath, projectPath, currentDirectory, databaseOptions }) => {
-  const filesToCreate = fs.readdirSync(templatePath)
+const generateProject = ({ scanPath, outputPath, currentDirectory, filesToBeReplaced, databaseOptions }) => {
+  const filesToCreate = fs.readdirSync(scanPath)
 
   for (let file of filesToCreate) {
-    const origFilePath = `${templatePath}/${file}`
+    const origFilePath = `${scanPath}/${file}`
 
     const stats = fs.statSync(origFilePath)
 
-    if (stats.isFile()) {
+    if (stats.isFile() && !filesToBeReplaced.includes(origFilePath)) {
       const contents = fs.readFileSync(origFilePath, 'utf8')
 
       if (file === '.npmignore') {
         file = '.gitignore'
       }
-      const writePath = `${currentDirectory}/${projectPath}/${file}`
+      const writePath = `${currentDirectory}/${outputPath}/${file}`
       fs.writeFileSync(writePath, contents, 'utf8')
-
     } else if (stats.isDirectory()) {
-
-      fs.mkdirSync(`${currentDirectory}/${projectPath}/${file}`)
+      fs.mkdirSync(`${currentDirectory}/${outputPath}/${file}`)
       generateProject({
-        templatePath: `${templatePath}/${file}`,
-        projectPath: `${projectPath}/${file}`,
-        currentDirectory
+        scanPath: `${scanPath}/${file}`,
+        outputPath: `${outputPath}/${file}`,
+        currentDirectory,
+        filesToBeReplaced
       })
     }
   }
