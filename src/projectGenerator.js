@@ -1,7 +1,7 @@
 const fs = require('fs')
 const generateFile = require('./fileGenerator')
 
-module.exports = ({
+const generateProject = ({
   templatePath,
   stubsPath,
   scanPath,
@@ -51,3 +51,5 @@ module.exports = ({
     }
   }
 }
+
+module.exports = generateProject

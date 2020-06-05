@@ -5,6 +5,9 @@ const inquirer = require('inquirer')
 const fs = require('fs')
 const generateProject = require('./src/projectGenerator')
 const { getFilesToBeReplaced, getFilesToBeOmmitted } = require('./src/constants')
+const { removeDirectory } = require('./src/fileSystem')
+
+let outputPath
 
 const setProjectName = () => [
   {
@@ -55,7 +58,7 @@ inquirer.prompt(setProjectName())
   }))
   .then(answers => {
     const projectName = answers['projectName']
-    const outputPath = `${CURR_DIR}/${projectName}`
+    outputPath = `${CURR_DIR}/${projectName}`
     const templatePath = `${__dirname}/express-react-boilerplate`
     const stubsPath = `${__dirname}/src/stubs`
 
@@ -80,4 +83,7 @@ inquirer.prompt(setProjectName())
       hasAuthentication
     })
   })
-  .catch((err) => console.error(err))
+  .catch((err) => {
+    console.error(err)
+    removeDirectory(outputPath)
+  })

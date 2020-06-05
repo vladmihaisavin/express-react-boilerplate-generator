@@ -42,15 +42,15 @@
 
 ## Client
 ### Necessary
-/server/src/index.js -> router<br>
-/server/src/components/sections/Users.jsx<br>
-/server/src/components/sections/UserForm.jsx<br>
-/server/src/components/structure/Navigator.jsx<br>
-/server/src/services/users.js<br>
-/server/src/static/userResource.json
+/client/src/index.js -> router<br>
+/client/src/components/sections/Users.jsx<br>
+/client/src/components/sections/UserForm.jsx<br>
+/client/src/components/structure/Header.jsx<br>
+/client/src/services/users.js<br>
+/client/src/static/userResource.json
 
 ### Optional
-/server/package.json
+/client/package.json
 
 
 The other files generated are general, being part of the boilerplate.

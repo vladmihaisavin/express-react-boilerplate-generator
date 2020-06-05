@@ -6,11 +6,11 @@ const RELATIVE_PATHS = {
   CLIENT_HEADER: '/client/src/components/structure/Header.jsx'
 }
 
-const removeLines = (data, lines=[]) => {
+const removeLines = (data, lines = []) => {
   return data
-    .split('\n')
+    .split(os.EOL)
     .filter((val, idx) => lines.indexOf(idx) === -1)
-    .join('\n');
+    .join(os.EOL)
 }
 
 const actions = ({
@@ -28,7 +28,7 @@ const actions = ({
       contents.replace(/###AvatarMenuImport###/g, AvatarMenuImport)
       contents.replace(/###AvatarMenuComponentCall###/g, AvatarMenuComponentCall)
     } else {
-      contents = removeLines(contents, [14, 48])
+      contents = removeLines(contents, [12, 46])
     }
 
     fs.writeFileSync(`${outputPath}/${fileName}`, contents, 'utf8')
@@ -44,7 +44,7 @@ module.exports = ({
   hasAuthentication
 }) => {
   const relativePath = fullFilePath.replace(templatePath, '')
-  if (RELATIVE_PATHS.values().includes(relativePath)) {
+  if (Object.values(RELATIVE_PATHS).includes(relativePath)) {
     actions({
       relativePath,
       stubsPath,
