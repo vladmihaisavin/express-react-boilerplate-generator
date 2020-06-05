@@ -12,6 +12,9 @@
   "bin": {
     "create-express-react-app": "./index.js"
   },
+  "scripts": {
+    "start:cli": "node ./src/app/cli/index.js"
+  },
   "dependencies": {
     "inquirer": "^7.1.0"
   }

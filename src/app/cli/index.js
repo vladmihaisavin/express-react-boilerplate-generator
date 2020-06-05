@@ -3,9 +3,10 @@
 const CURR_DIR = process.cwd()
 const inquirer = require('inquirer')
 const fs = require('fs')
-const generateProject = require('./src/projectGenerator')
-const { getFilesToBeReplaced, getFilesToBeOmmitted } = require('./src/constants')
-const { removeDirectory } = require('./src/fileSystem')
+const path = require('path')
+const generateProject = require('../../generators/projectGenerator')
+const { getFilesToBeReplaced, getFilesToBeOmmitted } = require('../../helpers/constants')
+const { removeDirectory } = require('../../helpers/fileSystem')
 
 let outputPath
 
@@ -59,8 +60,8 @@ inquirer.prompt(setProjectName())
   .then(answers => {
     const projectName = answers['projectName']
     outputPath = `${CURR_DIR}/${projectName}`
-    const templatePath = `${__dirname}/express-react-boilerplate`
-    const stubsPath = `${__dirname}/src/stubs`
+    const templatePath = path.join(__dirname, '../../../express-react-boilerplate')
+    const stubsPath = path.join(__dirname, '../../stubs')
 
     const filesToBeReplaced = getFilesToBeReplaced(templatePath)
     const hasAuthentication = answers['authentication'] !== 'none'

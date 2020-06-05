@@ -1,24 +1,9 @@
-const os = require('os')
 const fs = require('fs')
 const path = require('path')
+const { removeLines, newLineWithTabs } = require('../helpers/fileFormatting')
 
 const RELATIVE_PATHS = {
   CLIENT_HEADER: '/client/src/components/structure/Header.jsx'
-}
-
-const removeLines = (data, lines = []) => {
-  return data
-    .split(os.EOL)
-    .filter((val, idx) => lines.indexOf(idx) === -1)
-    .join(os.EOL)
-}
-
-const addTabs = (occurences) => {
-  let result = ''
-  for (let i = 0; i < occurences; ++i) {
-    result += '\t'
-  }
-  return result
 }
 
 const actions = ({
@@ -33,7 +18,7 @@ const actions = ({
   return {
     [RELATIVE_PATHS.CLIENT_HEADER]: ({ hasAuthentication }) => {
       const AvatarMenuImport = `import AvatarMenu from './AvatarMenu.jsx'`
-      const AvatarMenuComponentCall = `<Grid item>${os.EOL}${addTabs(7)}<AvatarMenu />${os.EOL}${addTabs(6)}</Grid>`
+      const AvatarMenuComponentCall = `<Grid item>${newLineWithTabs(7)}<AvatarMenu />${newLineWithTabs(6)}</Grid>`
   
       let content = readFile()
       if (hasAuthentication) {
