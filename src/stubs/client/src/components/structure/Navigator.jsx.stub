@@ -17,7 +17,7 @@ const categories = [
   {
     id: 'Resources',
     children: [
-      { id: '###ResourcePlural###', icon: <PeopleIcon />, active: true, url: '/###resourcePlural###' }
+###ResourceObjects###
     ]
   }
 ]
