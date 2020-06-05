@@ -6,9 +6,7 @@ module.exports = ({
 }) => {
   const {
     readFile,
-    writeFile,
-    removeLines,
-    newLineWithTabs
+    writeFile
   } = fileManager
 
   const generateResourcesControllers = (relativePath) => {}

@@ -10,6 +10,7 @@ const { removeDirectory, createFileManager } = require('../../helpers/fileSystem
 const createClientGenerators = require('../../generators/resources/clientGenerators')
 const createServerGenerators = require('../../generators/resources/serverGenerators')
 const createFileGenerator = require('../../generators/fileGenerator')
+const createDatabaseParser = require('../../databaseParser')
 
 let outputPath
 
@@ -60,7 +61,7 @@ inquirer.prompt(setProjectName())
       })
       .catch((err) => reject(err))
   }))
-  .then(answers => {
+  .then(async answers => {
     const projectName = answers['projectName']
     outputPath = `${CURR_DIR}/${projectName}`
     const templatePath = path.join(__dirname, '../../../express-react-boilerplate')
@@ -70,11 +71,17 @@ inquirer.prompt(setProjectName())
     const hasAuthentication = answers['authentication'] !== 'none'
     const filesToBeOmmitted = getFilesToBeOmmitted(templatePath, hasAuthentication)
 
+    const hasDatabase = answers['database'] !== 'none'
     const databaseOptions = {
+      hasDatabase,
       type: answers['database']
     }
 
-    const resources = {}
+    let resources = []
+    if (hasDatabase) {
+      const databaseParser = createDatabaseParser(databaseOptions)
+      resources = await databaseParser.gatherResources()
+    }
     
     const fileManager = createFileManager({ stubsPath, outputPath })
     const generateFile = createFileGenerator({

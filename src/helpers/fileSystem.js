@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const { removeLines, newLineWithTabs } = require('./fileFormatting')
 
 const removeDirectory = (pathName) => {
   if (fs.existsSync(pathName)) {
@@ -20,8 +19,6 @@ module.exports = {
   removeDirectory,
   createFileManager: ({ stubsPath, outputPath }) => ({
     readFile: (relativePath) => fs.readFileSync(path.join(stubsPath, `${relativePath}.stub`), 'utf8'),
-    writeFile: (relativePath, content) => fs.writeFileSync(`${outputPath}/${relativePath}`, content, 'utf8'),
-    removeLines,
-    newLineWithTabs
+    writeFile: (relativePath, content) => fs.writeFileSync(`${outputPath}/${relativePath}`, content, 'utf8')
   })
 }
