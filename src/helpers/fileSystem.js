@@ -20,7 +20,7 @@ module.exports = {
   removeDirectory,
   createFileManager: ({ stubsPath, outputPath }) => ({
     readFile: (relativePath) => fs.readFileSync(path.join(stubsPath, `${relativePath}.stub`), 'utf8'),
-    writeFile: (fileName, content) => fs.writeFileSync(`${outputPath}/${fileName}`, content, 'utf8'),
+    writeFile: (relativePath, content) => fs.writeFileSync(`${outputPath}/${relativePath}`, content, 'utf8'),
     removeLines,
     newLineWithTabs
   })

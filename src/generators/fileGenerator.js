@@ -3,50 +3,49 @@ const { RELATIVE_PATHS } = require('../helpers/constants')
 const actions = ({
   projectName,
   resourceGenerators,
-  relativePath,
-  fileName
+  relativePath
 }) => ({
   [RELATIVE_PATHS.SERVER_RESOURCES_CONTROLLER]: () => {
-    resourceGenerators.server.generateResourcesControllers(relativePath, fileName)
+    resourceGenerators.server.generateResourcesControllers(relativePath)
   },
   [RELATIVE_PATHS.SERVER_RESOURCE_MODEL]: () => {
-    resourceGenerators.server.generateResourceModels(relativePath, fileName)
+    resourceGenerators.server.generateResourceModels(relativePath)
   },
   [RELATIVE_PATHS.SERVER_RESOURCE_REPOSITORY]: () => {
-    resourceGenerators.server.generateResourceRepositories(relativePath, fileName)
+    resourceGenerators.server.generateResourceRepositories(relativePath)
   },
   [RELATIVE_PATHS.SERVER_RESOURCES_VALIDATOR]: () => {
-    resourceGenerators.server.generateResourcesValidators(relativePath, fileName)
+    resourceGenerators.server.generateResourcesValidators(relativePath)
   },
   [RELATIVE_PATHS.SERVER_ROUTES]: () => {
-    resourceGenerators.server.generateRoutes(relativePath, fileName)
+    resourceGenerators.server.generateRoutes(relativePath)
   },
   [RELATIVE_PATHS.SERVER_SCHEMAS]: () => {
-    resourceGenerators.server.generateSchemas(relativePath, fileName)
+    resourceGenerators.server.generateSchemas(relativePath)
   },
   [RELATIVE_PATHS.SERVER_PACKAGE_JSON]: () => {
     resourceGenerators.server.generatePackageJson(projectName)
   },
   [RELATIVE_PATHS.CLIENT_ROUTES]: () => {
-    resourceGenerators.client.generateRoutes(relativePath, fileName)
+    resourceGenerators.client.generateRoutes(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_RESOURCES_SECTION]: () => {
-    resourceGenerators.client.generateResourcesSections(relativePath, fileName)
+    resourceGenerators.client.generateResourcesSections(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_RESOURCE_FORM_SECTION]: () => {
-    resourceGenerators.client.generateResourceFormSections(relativePath, fileName)
+    resourceGenerators.client.generateResourceFormSections(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_HEADER]: () => {
-    resourceGenerators.client.generateHeader(relativePath, fileName)
+    resourceGenerators.client.generateHeader(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_NAVIGATOR]: () => {
-    resourceGenerators.client.generateNavigator(relativePath, fileName)
+    resourceGenerators.client.generateNavigator(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_RESOURCES_SERVICE]: () => {
-    resourceGenerators.client.generateResourcesServices(relativePath, fileName)
+    resourceGenerators.client.generateResourcesServices(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_RESOURCE_RESOURCE]: () => {
-    resourceGenerators.client.generateResourceResources(relativePath, fileName)
+    resourceGenerators.client.generateResourceResources(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_PACKAGE_JSON]: () => {
     resourceGenerators.client.generatePackageJson(projectName)
@@ -54,10 +53,9 @@ const actions = ({
 })
 
 module.exports = ({ projectName, resourceGenerators }) =>
-  ({ relativePath, fileName }) =>
+  ({ relativePath }) =>
     actions({
       projectName,
       resourceGenerators,
       relativePath,
-      fileName
     })[relativePath]()

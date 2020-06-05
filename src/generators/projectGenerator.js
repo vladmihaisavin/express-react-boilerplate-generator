@@ -19,8 +19,7 @@ const generateProject = (options) => {
     if (stats.isFile()) {
       if (filesToBeReplaced.includes(fullFilePath)) {
         generateFile({
-          relativePath: fullFilePath.replace(templatePath, ''),
-          fileName
+          relativePath: fullFilePath.replace(templatePath, '')
         })
       } else if (!filesToBeOmmitted.includes(fullFilePath)) {
         fs.copyFileSync(fullFilePath, `${outputPath}/${fileName}`)

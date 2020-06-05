@@ -73,6 +73,8 @@ inquirer.prompt(setProjectName())
     const databaseOptions = {
       type: answers['database']
     }
+
+    const resources = {}
     
     const fileManager = createFileManager({ stubsPath, outputPath })
     const generateFile = createFileGenerator({

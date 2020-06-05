@@ -1,14 +1,16 @@
-module.exports = (
+module.exports = ({
   hasAuthentication,
   resources,
-  {
+  fileManager
+}) => {
+  const {
     readFile,
     writeFile,
     removeLines,
     newLineWithTabs
-  }
-) => {
-  const generateRoutes = (relativePath, fileName) => {
+  } = fileManager
+
+  const generateRoutes = (relativePath) => {
     let content = readFile(relativePath)
 
     const LoginComponentImport = `import Login from './components/pages/Login.jsx'`
@@ -23,13 +25,13 @@ module.exports = (
     const DashboardComponentCall = `<${routeType} exact path="/dashboard" component={withLayout(Dashboard)} />`
     content = content.replace(/###DashboardComponentCall###/g, DashboardComponentCall)
 
-    writeFile(fileName, content)
+    writeFile(relativePath, content)
   }
 
-  const generateResourcesSections = (relativePath, fileName) => {}
-  const generateResourceFormSections = (relativePath, fileName) => {}
+  const generateResourcesSections = (relativePath) => {}
+  const generateResourceFormSections = (relativePath) => {}
 
-  const generateHeader = (relativePath, fileName) => {
+  const generateHeader = (relativePath) => {
     let content = readFile(relativePath)
 
     const AvatarMenuComponentImport = `import AvatarMenu from './AvatarMenu.jsx'`
@@ -40,13 +42,13 @@ module.exports = (
     } else {
       content = removeLines(content, [12, 46])
     }
-    
-    writeFile(fileName, content)
+
+    writeFile(relativePath, content)
   }
 
-  const generateNavigator = (relativePath, fileName) => {}
-  const generateResourcesServices = (relativePath, fileName) => {}
-  const generateResourceResources = (relativePath, fileName) => {}
+  const generateNavigator = (relativePath) => {}
+  const generateResourcesServices = (relativePath) => {}
+  const generateResourceResources = (relativePath) => {}
   const generatePackageJson = (projectName) => {}
 
   return {

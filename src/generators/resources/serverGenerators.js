@@ -1,23 +1,25 @@
-module.exports = (
+module.exports = ({
   hasAuthentication,
   resources,
-  {
+  fileManager
+}) => {
+  const {
     readFile,
     writeFile,
     removeLines,
     newLineWithTabs
-  }
-) => {
-  const generateResourcesController = (relativePath, fileName) => {}
-  const generateResourceModels = (relativePath, fileName) => {}
-  const generateResourceRepositories = (relativePath, fileName) => {}
-  const generateResourcesValidators = (relativePath, fileName) => {}
-  const generateRoutes = (relativePath, fileName) => {}
-  const generateSchemas = (relativePath, fileName) => {}
+  } = fileManager
+
+  const generateResourcesControllers = (relativePath) => {}
+  const generateResourceModels = (relativePath) => {}
+  const generateResourceRepositories = (relativePath) => {}
+  const generateResourcesValidators = (relativePath) => {}
+  const generateRoutes = (relativePath) => {}
+  const generateSchemas = (relativePath) => {}
   const generatePackageJson = (projectName) => {}
 
   return {
-    generateResourcesController,
+    generateResourcesControllers,
     generateResourceModels,
     generateResourceRepositories,
     generateResourcesValidators,
