@@ -1,5 +1,20 @@
 # express-react-boilerplate-generator
 
+# Contents
+1. Express API<br>
+1.1. ExpressJS<br>
+1.2. Authentication: PassportJS with JWT<br>
+1.3. Testing: Mocha and Chai<br>
+1.4. Data persistence - MySQL<br>
+1.5. Validation: Joi<br>
+1.6. Documentation: Swagger
+2. React Client APP<br>
+2.1. React app created with create-react-app<br>
+2.2. Material UI theme<br>
+2.3. Authentication with JWT token<br>
+2.4. AJAX calls via axios.js<br>
+2.5. Proxy for local development
+
 # How to use
 ## CLI
 1. Go to a directory where you want to start a project;
@@ -14,34 +29,24 @@
 
 ## Server
 ### Necessary
-/server/src/controllers/users.js
-
-/server/src/models/user.json
-
-/server/src/repositories/user.js
-
-/server/src/validation/users.js
-
+/server/src/controllers/users.js<br>
+/server/src/models/user.json<br>
+/server/src/repositories/user.js<br>
+/server/src/validation/users.js<br>
 /server/src/routes.js
 
 ### Optional
-/server/infra/schemas.js
-
+/server/infra/schemas.js<br>
 /server/package.json
 
 
 ## Client
 ### Necessary
-/server/src/index.js -> router
-
-/server/src/components/sections/Users.jsx
-
-/server/src/components/sections/UserForm.jsx
-
-/server/src/components/structure/Navigator.jsx
-
-/server/src/services/users.js
-
+/server/src/index.js -> router<br>
+/server/src/components/sections/Users.jsx<br>
+/server/src/components/sections/UserForm.jsx<br>
+/server/src/components/structure/Navigator.jsx<br>
+/server/src/services/users.js<br>
 /server/src/static/userResource.json
 
 ### Optional

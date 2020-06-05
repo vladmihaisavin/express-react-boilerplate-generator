@@ -3,8 +3,8 @@
 const CURR_DIR = process.cwd()
 const inquirer = require('inquirer')
 const fs = require('fs')
-const { generateProject } = require('./src/index')
-const { getFilesToBeReplaced } = require('./src/constants')
+const generateProject = require('./src/projectGenerator')
+const { getFilesToBeReplaced, getFilesToBeOmmitted } = require('./src/constants')
 
 const setProjectName = () => [
   {
@@ -20,18 +20,34 @@ const setProjectName = () => [
   }
 ]
 
-const chooseDatabase = () => [
+const chooseDatabaseType = () => [
   {
     name: 'database',
     type: 'list',
-    message: `Please select the database type:`,
+    message: 'Please select the database type:',
     choices: [new inquirer.Separator(), 'mysql', new inquirer.Separator(), 'none', new inquirer.Separator()]
   }
 ]
 
+const chooseAuthentication = () => [
+  {
+    name: 'authentication',
+    type: 'list',
+    message: 'Please select the authentication type:',
+    choices: [new inquirer.Separator(), 'passport.js with jwt', new inquirer.Separator(), 'none', new inquirer.Separator()]
+  }
+] 
+
 inquirer.prompt(setProjectName())
   .then((answers) => new Promise((resolve, reject) => {
-    inquirer.prompt(chooseDatabase())
+    inquirer.prompt(chooseAuthentication())
+      .then((newAnswer) => {
+        resolve({ ...answers, ...newAnswer })
+      })
+      .catch((err) => reject(err))
+  }))
+  .then((answers) => new Promise((resolve, reject) => {
+    inquirer.prompt(chooseDatabaseType())
       .then((newAnswer) => {
         resolve({ ...answers, ...newAnswer })
       })
@@ -39,20 +55,29 @@ inquirer.prompt(setProjectName())
   }))
   .then(answers => {
     const projectName = answers['projectName']
+    const outputPath = `${CURR_DIR}/${projectName}`
     const templatePath = `${__dirname}/express-react-boilerplate`
+    const stubsPath = `${__dirname}/src/stubs`
+
     const filesToBeReplaced = getFilesToBeReplaced(templatePath)
+    const hasAuthentication = answers['authentication'] !== 'none'
+    const filesToBeOmmitted = getFilesToBeOmmitted(templatePath, hasAuthentication)
+
     const databaseOptions = {
       type: answers['database']
     }
 
-    fs.mkdirSync(`${CURR_DIR}/${projectName}`)
+    fs.mkdirSync(outputPath)
 
     generateProject({
+      templatePath,
+      stubsPath,
       scanPath: templatePath,
-      outputPath: projectName,
-      currentDirectory: CURR_DIR,
+      outputPath,
       filesToBeReplaced,
-      databaseOptions
+      filesToBeOmmitted,
+      databaseOptions,
+      hasAuthentication
     })
   })
   .catch((err) => console.error(err))
