@@ -78,10 +78,9 @@ inquirer.prompt(setProjectName())
     
     const fileManager = createFileManager({ stubsPath, outputPath })
     const generateFile = createFileGenerator({
-      projectName,
       resourceGenerators: {
-        client: createClientGenerators({ hasAuthentication, resources, fileManager }),
-        server: createServerGenerators({ hasAuthentication, resources, fileManager })
+        client: createClientGenerators({ projectName, hasAuthentication, resources, fileManager }),
+        server: createServerGenerators({ projectName, hasAuthentication, resources, fileManager })
       }
     })
 

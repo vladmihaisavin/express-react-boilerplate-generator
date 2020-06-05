@@ -1,4 +1,5 @@
 module.exports = ({
+  projectName,
   hasAuthentication,
   resources,
   fileManager
@@ -49,7 +50,10 @@ module.exports = ({
   const generateNavigator = (relativePath) => {}
   const generateResourcesServices = (relativePath) => {}
   const generateResourceResources = (relativePath) => {}
-  const generatePackageJson = (projectName) => {}
+  const generatePackageJson = (relativePath) => {
+    let content = readFile(relativePath)
+    writeFile(relativePath, content.replace(/###projectName###/g, projectName))
+  }
 
   return {
     generateRoutes,

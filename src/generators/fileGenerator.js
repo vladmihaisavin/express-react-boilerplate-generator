@@ -1,7 +1,6 @@
 const { RELATIVE_PATHS } = require('../helpers/constants')
 
 const actions = ({
-  projectName,
   resourceGenerators,
   relativePath
 }) => ({
@@ -24,7 +23,7 @@ const actions = ({
     resourceGenerators.server.generateSchemas(relativePath)
   },
   [RELATIVE_PATHS.SERVER_PACKAGE_JSON]: () => {
-    resourceGenerators.server.generatePackageJson(projectName)
+    resourceGenerators.server.generatePackageJson(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_ROUTES]: () => {
     resourceGenerators.client.generateRoutes(relativePath)
@@ -48,14 +47,13 @@ const actions = ({
     resourceGenerators.client.generateResourceResources(relativePath)
   },
   [RELATIVE_PATHS.CLIENT_PACKAGE_JSON]: () => {
-    resourceGenerators.client.generatePackageJson(projectName)
+    resourceGenerators.client.generatePackageJson(relativePath)
   }
 })
 
-module.exports = ({ projectName, resourceGenerators }) =>
+module.exports = ({ resourceGenerators }) =>
   ({ relativePath }) =>
     actions({
-      projectName,
       resourceGenerators,
-      relativePath,
+      relativePath
     })[relativePath]()
