@@ -13,27 +13,39 @@ const removeLines = (data, lines = []) => {
     .join(os.EOL)
 }
 
+const addTabs = (occurences) => {
+  let result = ''
+  for (let i = 0; i < occurences; ++i) {
+    result += '\t'
+  }
+  return result
+}
+
 const actions = ({
   relativePath,
   stubsPath,
   outputPath,
   fileName
-}) => ({
-  [RELATIVE_PATHS.CLIENT_HEADER]: ({ hasAuthentication }) => {
-    const AvatarMenuImport = `import AvatarMenu from './AvatarMenu.jsx'${os.EOL}`
-    const AvatarMenuComponentCall = `<Grid item>${os.EOL}\t\t\t\t\t\t<AvatarMenu />${os.EOL}\t\t\t\t\t</Grid>${os.EOL}`
+}) => {
+  const readFile = () => fs.readFileSync(path.join(stubsPath, `${relativePath}.stub`), 'utf8')
+  const writeFile = (content) => fs.writeFileSync(`${outputPath}/${fileName}`, content, 'utf8')
 
-    let contents = fs.readFileSync(path.join(stubsPath, `${relativePath}.stub`), 'utf8')
-    if (hasAuthentication) {
-      contents.replace(/###AvatarMenuImport###/g, AvatarMenuImport)
-      contents.replace(/###AvatarMenuComponentCall###/g, AvatarMenuComponentCall)
-    } else {
-      contents = removeLines(contents, [12, 46])
+  return {
+    [RELATIVE_PATHS.CLIENT_HEADER]: ({ hasAuthentication }) => {
+      const AvatarMenuImport = `import AvatarMenu from './AvatarMenu.jsx'`
+      const AvatarMenuComponentCall = `<Grid item>${os.EOL}${addTabs(7)}<AvatarMenu />${os.EOL}${addTabs(6)}</Grid>`
+  
+      let content = readFile()
+      if (hasAuthentication) {
+        content = content.replace(/###AvatarMenuImport###/g, AvatarMenuImport)
+        content = content.replace(/###AvatarMenuComponentCall###/g, AvatarMenuComponentCall)
+      } else {
+        content = removeLines(content, [12, 46])
+      }
+      writeFile(content)
     }
-
-    fs.writeFileSync(`${outputPath}/${fileName}`, contents, 'utf8')
   }
-})
+}
 
 module.exports = ({
   fullFilePath,

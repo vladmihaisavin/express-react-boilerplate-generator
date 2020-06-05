@@ -29,12 +29,7 @@ const generateProject = ({
           hasAuthentication
         })
       } else if (!filesToBeOmmitted.includes(fullFilePath)) {
-        const contents = fs.readFileSync(fullFilePath, 'utf8')
-  
-        if (fileName === '.npmignore') {
-          fileName = '.gitignore'
-        }
-        fs.writeFileSync(`${outputPath}/${fileName}`, contents, 'utf8')
+        fs.copyFileSync(fullFilePath, `${outputPath}/${fileName}`)
       }
     } else if (stats.isDirectory()) {
       fs.mkdirSync(`${outputPath}/${fileName}`)
