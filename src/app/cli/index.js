@@ -7,6 +7,9 @@ const path = require('path')
 const generateProject = require('../../generators/projectGenerator')
 const { getFilesToBeReplaced, getFilesToBeOmmitted } = require('../../helpers/constants')
 const { removeDirectory } = require('../../helpers/fileSystem')
+const createClientGenerators = require('../../generators/resources/clientGenerators')
+const createServerGenerators = require('../../generators/resources/serverGenerators')
+const createFileGenerator = require('../../generators/fileGenerator')
 
 let outputPath
 
@@ -70,18 +73,28 @@ inquirer.prompt(setProjectName())
     const databaseOptions = {
       type: answers['database']
     }
+    
+    const clientGenerators = createClientGenerators(resources, { stubsPath, outputPath })
+    const serverGenerators = createServerGenerators(resources, { stubsPath, outputPath })
+    const generateFile = createFileGenerator({
+      stubsPath,
+      outputPath,
+      hasAuthentication,
+      resourceGenerators: {
+        client: clientGenerators,
+        server: serverGenerators
+      }
+    })
 
     fs.mkdirSync(outputPath)
 
     generateProject({
       templatePath,
-      stubsPath,
       scanPath: templatePath,
       outputPath,
       filesToBeReplaced,
       filesToBeOmmitted,
-      databaseOptions,
-      hasAuthentication
+      generateFile
     })
   })
   .catch((err) => {

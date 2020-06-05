@@ -4,11 +4,11 @@ import * as serviceWorker from './serviceWorker'
 import { createBrowserHistory } from "history"
 import { Router, Route, Switch, Redirect } from "react-router-dom"
 import ProtectedRoute from './components/structure/ProtectedRoute.jsx'
-import Login from './components/pages/Login.jsx'
+###LoginComponentImport###
 import NotFound from './components/pages/NotFound.jsx'
 import Main from './components/pages/Main.jsx'
 
-###ResourceComponentsImport###
+//###ResourceComponentsImport###
 //import ###ResourcePlural### from './components/sections/###ResourcePlural###.jsx'
 //import ###ResourceSingular###Form from './components/sections/###ResourceSingular###Form.jsx'
 
@@ -24,10 +24,10 @@ ReactDOM.render(
             <Route exact path="/">
                 <Redirect to="/dashboard" />
             </Route>
-            <Route path="/login" component={Login} />
-            <ProtectedRoute exact path="/dashboard" component={withLayout(Dashboard)} />
+            ###LoginComponentCall###
+            ###DashboardComponentCall###
 
-            ###ResourceRoutes###
+            //###ResourceRoutes###
             //<ProtectedRoute exact path="/###resourcePlural###" component={withLayout(###ResourcePlural###)} />
             //<ProtectedRoute exact path="/###resourcePlural###/new" component={withLayout(###ResourceSingular###Form)} action='create' />
             //<ProtectedRoute exact path="/###resourcePlural###/edit/:userId" component={withLayout(###ResourceSingular###Form)} action='update' />

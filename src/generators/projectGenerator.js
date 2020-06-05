@@ -1,16 +1,14 @@
 const fs = require('fs')
-const generateFile = require('./fileGenerator')
 
-const generateProject = ({
-  templatePath,
-  stubsPath,
-  scanPath,
-  outputPath,
-  filesToBeReplaced,
-  filesToBeOmmitted,
-  databaseOptions,
-  hasAuthentication
-}) => {
+const generateProject = (options) => {
+  const {
+    templatePath,
+    scanPath,
+    outputPath,
+    filesToBeReplaced,
+    filesToBeOmmitted,
+    generateFile
+  } = options
   const filesToCreate = fs.readdirSync(scanPath)
 
   for (let fileName of filesToCreate) {
@@ -21,27 +19,19 @@ const generateProject = ({
     if (stats.isFile()) {
       if (filesToBeReplaced.includes(fullFilePath)) {
         generateFile({
-          fullFilePath,
-          templatePath,
-          stubsPath,
-          outputPath,
-          fileName,
-          hasAuthentication
+          relativePath: fullFilePath.replace(templatePath, ''),
+          fileName
         })
       } else if (!filesToBeOmmitted.includes(fullFilePath)) {
         fs.copyFileSync(fullFilePath, `${outputPath}/${fileName}`)
       }
     } else if (stats.isDirectory()) {
       fs.mkdirSync(`${outputPath}/${fileName}`)
+
       generateProject({
-        templatePath,
-        stubsPath,
+        ...options,
         scanPath: `${scanPath}/${fileName}`,
-        outputPath: `${outputPath}/${fileName}`,
-        filesToBeReplaced,
-        filesToBeOmmitted,
-        databaseOptions,
-        hasAuthentication
+        outputPath: `${outputPath}/${fileName}`
       })
     }
   }
