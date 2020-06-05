@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const generateProject = require('../../generators/projectGenerator')
 const { getFilesToBeReplaced, getFilesToBeOmmitted } = require('../../helpers/constants')
-const { removeDirectory } = require('../../helpers/fileSystem')
+const { removeDirectory, createFileManager } = require('../../helpers/fileSystem')
 const createClientGenerators = require('../../generators/resources/clientGenerators')
 const createServerGenerators = require('../../generators/resources/serverGenerators')
 const createFileGenerator = require('../../generators/fileGenerator')
@@ -74,15 +74,12 @@ inquirer.prompt(setProjectName())
       type: answers['database']
     }
     
-    const clientGenerators = createClientGenerators(resources, { stubsPath, outputPath })
-    const serverGenerators = createServerGenerators(resources, { stubsPath, outputPath })
+    const fileManager = createFileManager({ stubsPath, outputPath })
     const generateFile = createFileGenerator({
-      stubsPath,
-      outputPath,
-      hasAuthentication,
+      projectName,
       resourceGenerators: {
-        client: clientGenerators,
-        server: serverGenerators
+        client: createClientGenerators({ hasAuthentication, resources, fileManager }),
+        server: createServerGenerators({ hasAuthentication, resources, fileManager })
       }
     })
 

@@ -3,10 +3,10 @@ const path = require('path')
 const createPath = (templatePath) => filePath => path.join(templatePath, filePath)
 
 const RELATIVE_PATHS = {
-  SERVER_USERS_CONTROLLER: '/server/src/controllers/users.js',
-  SERVER_USERS_MODEL: '/server/src/models/user.json',
-  SERVER_USERS_REPOSITORY: '/server/src/repositories/user.js',
-  SERVER_USERS_VALIDATOR: '/server/src/validation/users.js',
+  SERVER_RESOURCES_CONTROLLER: '/server/src/controllers/users.js',
+  SERVER_RESOURCE_MODEL: '/server/src/models/user.json',
+  SERVER_RESOURCE_REPOSITORY: '/server/src/repositories/user.js',
+  SERVER_RESOURCES_VALIDATOR: '/server/src/validation/users.js',
   SERVER_ROUTES: '/server/src/routes.js',
   SERVER_SCHEMAS: '/server/infra/schemas.js',
   SERVER_PACKAGE_JSON: '/server/package.json',
