@@ -86,10 +86,14 @@ module.exports = ({
   const generateNavigator = (relativePath) => {
     let content = readFile(relativePath)
 
-    const ResourceObjects = resources.map(resource => {
-      return `${addTabs(3)}{ id: '${resource.ResourcePlural}', icon: <PeopleIcon />, active: true, url: '/${resource.resourcePlural}' }`
-    }).join(os.EOL)
-    content = content.replace(/###ResourceObjects###/g, ResourceObjects)
+    if (resources.length > 0) {
+      const ResourceObjects = resources.map(resource => {
+        return `${addTabs(3)}{ id: '${resource.ResourcePlural}', icon: <PeopleIcon />, active: true, url: '/${resource.resourcePlural}' }`
+      }).join(os.EOL)
+      content = content.replace(/###ResourceObjects###/g, ResourceObjects)
+    } else {
+      content = removeLines(content, [19])
+    }
 
     writeFile(relativePath, content)
   }
