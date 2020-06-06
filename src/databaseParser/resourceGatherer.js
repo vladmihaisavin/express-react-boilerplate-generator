@@ -1,12 +1,38 @@
-module.exports = async () => {
-  
-  return [
-    {
-      tableName: 'users',
+module.exports = (dbClient) => async () => {
+  const getTableNames = async (dbClient) => {
+    return (await dbClient.listTables())
+      .results
+      .reduce((acc, result) => { 
+        acc.push(result.Tables_in_test_db)
+        return acc
+      }, [])
+  }
+
+  const tables = await getTableNames(dbClient)
+  const resources = []
+
+  for (const table of tables) {
+    const description = (await dbClient.describeTable(table)).results
+    const resourceInformation = {
+      tableName: table,
       resourceSingular: 'user',
       resourcePlural: 'users',
       ResourceSingular: 'User',
-      ResourcePlural: 'Users'
+      ResourcePlural: 'Users',
+      fields: []
     }
-  ]
+    for (const RowDataPacket of description) {
+      resourceInformation.fields.push({
+        name: RowDataPacket.Field,
+        type: RowDataPacket.Type,
+        nullable: RowDataPacket.Null === 'YES',
+        key: RowDataPacket.Key,
+        default: RowDataPacket.Default,
+        extra: RowDataPacket.Extra
+      })
+    }
+    resources.push(resourceInformation)
+  }
+  
+  return resources
 }

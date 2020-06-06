@@ -1,7 +1,13 @@
-const gatherResources = require('./resourceGatherer')
+const createMysqlClient = require('mysql-node-client')
+const createResourceGatherer = require('./resourceGatherer')
 
-module.exports = (databaseOptions) => {
+module.exports = async (databaseOptions) => {
+  let dbClient = {}
+
+  if (databaseOptions.type === 'mysql') {
+    dbClient = createMysqlClient(databaseOptions.connectionData)
+  }
   return {
-    gatherResources
+    gatherResources: createResourceGatherer(dbClient)
   }
 }

@@ -11,54 +11,15 @@ const createClientGenerators = require('../../generators/resources/clientGenerat
 const createServerGenerators = require('../../generators/resources/serverGenerators')
 const createFileGenerator = require('../../generators/fileGenerator')
 const createDatabaseParser = require('../../databaseParser')
+const {
+  setProjectName,
+  chooseAuthentication,
+  chooseDatabaseType,
+  chooseAuthenticableResource,
+  setDatabaseCredentials
+} = require('./interactions')
 
 let outputPath
-
-const setProjectName = () => [
-  {
-    name: 'projectName',
-    type: 'input',
-    message: 'Please input the project name:',
-    validate: (input) => {
-      if (/^([A-Za-z\-\_\d])+$/.test(input)) {
-        return true
-      }
-      return 'Project name may only include letters, numbers, underscores and hashes.'
-    }
-  }
-]
-
-const chooseAuthentication = () => [
-  {
-    name: 'authentication',
-    type: 'list',
-    message: 'Please select the authentication type:',
-    choices: [new inquirer.Separator(), 'passport.js with jwt', new inquirer.Separator(), 'none', new inquirer.Separator()]
-  }
-] 
-
-const chooseDatabaseType = () => [
-  {
-    name: 'database_type',
-    type: 'list',
-    message: 'Please select the database type:',
-    choices: [new inquirer.Separator(), 'mysql', new inquirer.Separator(), 'none', new inquirer.Separator()]
-  }
-]
-
-const chooseAuthenticableResource = () => [
-  {
-    name: 'authenticableResourceTable',
-    type: 'input',
-    message: 'Please input the database table name for the authenticable resource:',
-    validate: (input) => {
-      if (/^([A-Za-z\-\_\d])+$/.test(input)) {
-        return true
-      }
-      return 'A table name may only include letters, numbers, underscores and hashes.'
-    }
-  }
-]
 
 inquirer.prompt(setProjectName())
   .then((answers) => new Promise((resolve, reject) => {
@@ -74,6 +35,17 @@ inquirer.prompt(setProjectName())
         resolve({ ...answers, ...newAnswer })
       })
       .catch((err) => reject(err))
+  }))
+  .then((answers) => new Promise((resolve, reject) => {
+    if (answers['database_type'] !== 'none') {
+      inquirer.prompt(setDatabaseCredentials())
+        .then((connectionData) => {
+          resolve({ ...answers, connectionData })
+        })
+        .catch((err) => reject(err))
+    } else {
+      resolve(answers)
+    }
   }))
   .then((answers) => new Promise((resolve, reject) => {
     if (answers['authentication'] !== 'none' && answers['database_type'] !== 'none') {
@@ -99,13 +71,15 @@ inquirer.prompt(setProjectName())
     const hasDatabase = answers['database_type'] !== 'none'
     const databaseOptions = {
       hasDatabase,
-      type: answers['database_type']
+      type: answers['database_type'],
+      connectionData: answers['connectionData']
     }
 
     let resources = []
     if (hasDatabase) {
-      const databaseParser = createDatabaseParser(databaseOptions)
+      const databaseParser = await createDatabaseParser(databaseOptions)
       resources = await databaseParser.gatherResources()
+      console.log(JSON.stringify(resources))
     }
     
     const fileManager = createFileManager({ stubsPath, outputPath })
