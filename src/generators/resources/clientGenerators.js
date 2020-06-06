@@ -8,12 +8,12 @@ module.exports = ({
   fileManager
 }) => {
   const {
-    readFile,
+    readStub,
     writeFile
   } = fileManager
 
   const generateRoutes = (relativePath) => {
-    let content = readFile(relativePath)
+    let content = readStub(relativePath)
 
     const LoginComponentImport = `import Login from './components/pages/Login.jsx'`
     const LoginComponentCall = `${addTabs(3)}<Route path="/login" component={Login} />`
@@ -47,7 +47,7 @@ module.exports = ({
   }
 
   const generateResourcesSections = (relativePath) => {
-    const resourcesSectionStubContent = readFile(relativePath.replace('Users.jsx', 'Resources.jsx'))
+    const resourcesSectionStubContent = readStub(relativePath.replace('Users.jsx', 'Resources.jsx'))
     resources.forEach(resource => {
       let content = resourcesSectionStubContent.replace(/###ResourcePlural###/g, resource.ResourcePlural)
       content = content.replace(/###resourcePlural###/g, resource.resourcePlural)
@@ -58,7 +58,7 @@ module.exports = ({
   }
 
   const generateResourceFormSections = (relativePath) => {
-    const resourceFormSectionStubContent = readFile(relativePath.replace('UserForm.jsx', 'ResourceForm.jsx'))
+    const resourceFormSectionStubContent = readStub(relativePath.replace('UserForm.jsx', 'ResourceForm.jsx'))
     resources.forEach(resource => {
       let content = resourceFormSectionStubContent.replace(/###ResourceSingular###/g, resource.ResourceSingular)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
@@ -69,7 +69,7 @@ module.exports = ({
   }
 
   const generateHeader = (relativePath) => {
-    let content = readFile(relativePath)
+    let content = readStub(relativePath)
 
     const AvatarMenuComponentImport = `import AvatarMenu from './AvatarMenu.jsx'`
     const AvatarMenuComponentCall = `<Grid item>${newLineWithTabs(7)}<AvatarMenu />${newLineWithTabs(6)}</Grid>`
@@ -84,7 +84,7 @@ module.exports = ({
   }
 
   const generateNavigator = (relativePath) => {
-    let content = readFile(relativePath)
+    let content = readStub(relativePath)
 
     if (resources.length > 0) {
       const ResourceObjects = resources.map(resource => {
@@ -99,7 +99,7 @@ module.exports = ({
   }
 
   const generateResourcesServices = (relativePath) => {
-    const resourcesServiceStubContent = readFile(relativePath.replace('users.js', 'resources.js'))
+    const resourcesServiceStubContent = readStub(relativePath.replace('users.js', 'resources.js'))
     resources.forEach(resource => {
       let content = resourcesServiceStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
@@ -109,6 +109,7 @@ module.exports = ({
   }
 
   const generateResourceResources = (relativePath) => {
+    //TO DO: update after parsing DB
     resources.forEach(resource => {
       const resourceObject = {
         resourceName: resource.resourceSingular,
@@ -123,7 +124,7 @@ module.exports = ({
   }
 
   const generatePackageJson = (relativePath) => {
-    let content = readFile(relativePath)
+    let content = readStub(relativePath)
     writeFile(relativePath, content.replace(/###projectName###/g, projectName))
   }
 

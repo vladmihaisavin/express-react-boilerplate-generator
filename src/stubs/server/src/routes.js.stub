@@ -1,8 +1,8 @@
 const { Router } = require('express')
 const { version } = require('../package.json')
 const authenticate = require('./middlewares/authenticate')
-const accounts = require('./controllers/accounts')
-###ResourceControllerImport### //const ###resourcePlural### = require('./controllers/###resourcePlural###')
+###AccountsControllerImport###
+###ResourceControllerImports###
 
 module.exports = ({ config, repositories }) => {
   const app = new Router()
@@ -10,8 +10,9 @@ module.exports = ({ config, repositories }) => {
   app.get('/info', (req, res) => {
     res.json({ version })
   })
-  app.use('/accounts', accounts({ config, ###resourceSingular###Repository: repositories.###resourceSingular### }))
-  ###ResourceControllerApplyAsMiddleware### //app.use('/###resourcePlural###', authenticate, ###resourcePlural###(repositories.###resourceSingular###))
+  //e.g. app.use('/path', ...middlewares, controller({ config, resourceRepository}))
+###AccountsRoutes###
+###ResourceRoutes###
 
   return app
 }

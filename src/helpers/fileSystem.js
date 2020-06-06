@@ -18,7 +18,7 @@ const removeDirectory = (pathName) => {
 module.exports = {
   removeDirectory,
   createFileManager: ({ stubsPath, outputPath }) => ({
-    readFile: (relativePath) => fs.readFileSync(path.join(stubsPath, `${relativePath}.stub`), 'utf8'),
+    readStub: (relativePath) => fs.readFileSync(path.join(stubsPath, `${relativePath}.stub`), 'utf8'),
     writeFile: (relativePath, content) => fs.writeFileSync(`${outputPath}/${relativePath}`, content, 'utf8')
   })
 }

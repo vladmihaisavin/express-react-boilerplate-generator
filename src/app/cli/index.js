@@ -18,22 +18,13 @@ const setProjectName = () => [
   {
     name: 'projectName',
     type: 'input',
-    message: 'Project name:',
+    message: 'Please input the project name:',
     validate: (input) => {
       if (/^([A-Za-z\-\_\d])+$/.test(input)) {
         return true
       }
       return 'Project name may only include letters, numbers, underscores and hashes.'
     }
-  }
-]
-
-const chooseDatabaseType = () => [
-  {
-    name: 'database',
-    type: 'list',
-    message: 'Please select the database type:',
-    choices: [new inquirer.Separator(), 'mysql', new inquirer.Separator(), 'none', new inquirer.Separator()]
   }
 ]
 
@@ -45,6 +36,29 @@ const chooseAuthentication = () => [
     choices: [new inquirer.Separator(), 'passport.js with jwt', new inquirer.Separator(), 'none', new inquirer.Separator()]
   }
 ] 
+
+const chooseDatabaseType = () => [
+  {
+    name: 'database_type',
+    type: 'list',
+    message: 'Please select the database type:',
+    choices: [new inquirer.Separator(), 'mysql', new inquirer.Separator(), 'none', new inquirer.Separator()]
+  }
+]
+
+const chooseAuthenticableResource = () => [
+  {
+    name: 'authenticableResourceTable',
+    type: 'input',
+    message: 'Please input the database table name for the authenticable resource:',
+    validate: (input) => {
+      if (/^([A-Za-z\-\_\d])+$/.test(input)) {
+        return true
+      }
+      return 'A table name may only include letters, numbers, underscores and hashes.'
+    }
+  }
+]
 
 inquirer.prompt(setProjectName())
   .then((answers) => new Promise((resolve, reject) => {
@@ -61,6 +75,17 @@ inquirer.prompt(setProjectName())
       })
       .catch((err) => reject(err))
   }))
+  .then((answers) => new Promise((resolve, reject) => {
+    if (answers['authentication'] !== 'none' && answers['database_type'] !== 'none') {
+      inquirer.prompt(chooseAuthenticableResource())
+        .then((newAnswer) => {
+          resolve({ ...answers, ...newAnswer })
+        })
+        .catch((err) => reject(err))
+    } else {
+      resolve(answers)
+    }
+  }))
   .then(async answers => {
     const projectName = answers['projectName']
     outputPath = `${CURR_DIR}/${projectName}`
@@ -71,10 +96,10 @@ inquirer.prompt(setProjectName())
     const hasAuthentication = answers['authentication'] !== 'none'
     const filesToBeOmmitted = getFilesToBeOmmitted(templatePath, hasAuthentication)
 
-    const hasDatabase = answers['database'] !== 'none'
+    const hasDatabase = answers['database_type'] !== 'none'
     const databaseOptions = {
       hasDatabase,
-      type: answers['database']
+      type: answers['database_type']
     }
 
     let resources = []
@@ -86,8 +111,20 @@ inquirer.prompt(setProjectName())
     const fileManager = createFileManager({ stubsPath, outputPath })
     const generateFile = createFileGenerator({
       resourceGenerators: {
-        client: createClientGenerators({ projectName, hasAuthentication, resources, fileManager }),
-        server: createServerGenerators({ projectName, hasAuthentication, resources, fileManager })
+        client: createClientGenerators({
+          projectName,
+          hasAuthentication,
+          resources,
+          fileManager
+        }),
+        server: createServerGenerators({
+          projectName,
+          hasAuthentication,
+          authenticableResourceTableName,
+          databaseType: answers['database_type'],
+          resources,
+          fileManager
+        })
       }
     })
 
