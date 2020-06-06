@@ -13,6 +13,9 @@ const actions = ({
   [RELATIVE_PATHS.SERVER_RESOURCE_REPOSITORY]: () => {
     resourceGenerators.server.generateResourceRepositories(relativePath)
   },
+  [RELATIVE_PATHS.SERVER_REPOSITORY_INDEX]: () => {
+    resourceGenerators.server.generateRepositoryIndex(relativePath)
+  },
   [RELATIVE_PATHS.SERVER_RESOURCES_VALIDATOR]: () => {
     resourceGenerators.server.generateResourcesValidators(relativePath)
   },

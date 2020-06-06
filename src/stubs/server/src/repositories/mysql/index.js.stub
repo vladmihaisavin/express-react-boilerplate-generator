@@ -1,0 +1,5 @@
+###RepositoryImports###
+
+module.exports = (###DatabaseType###Client) => ({
+###RepositoryExports###
+})

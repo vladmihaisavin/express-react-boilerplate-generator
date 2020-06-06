@@ -32,6 +32,7 @@
 /server/src/controllers/users.js<br>
 /server/src/models/user.json<br>
 /server/src/repositories/user.js<br>
+/server/src/repositories/index.js<br>
 /server/src/validation/users.js<br>
 /server/src/routes.js
 

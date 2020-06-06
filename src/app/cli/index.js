@@ -120,8 +120,8 @@ inquirer.prompt(setProjectName())
         server: createServerGenerators({
           projectName,
           hasAuthentication,
-          authenticableResourceTableName,
-          databaseType: answers['database_type'],
+          authenticableResourceTableName: answers['authenticableResourceTable'],
+          databaseType: hasDatabase ? answers['database_type'] : '',
           resources,
           fileManager
         })

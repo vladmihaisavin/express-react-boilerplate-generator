@@ -6,6 +6,7 @@ const RELATIVE_PATHS = {
   SERVER_RESOURCES_CONTROLLER: '/server/src/controllers/users.js',
   SERVER_RESOURCE_MODEL: '/server/src/models/user.json',
   SERVER_RESOURCE_REPOSITORY: '/server/src/repositories/user.js',
+  SERVER_REPOSITORY_INDEX: '/server/src/repositories/index.js',
   SERVER_RESOURCES_VALIDATOR: '/server/src/validation/users.js',
   SERVER_ROUTES: '/server/src/routes.js',
   SERVER_SCHEMAS: '/server/infra/schemas.js',
