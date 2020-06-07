@@ -1,7 +1,7 @@
 const path = require('path')
 const os = require('os')
 const pluralize = require('pluralize')
-const { addTabs, newLineWithTabs, removeLines } = require('../../helpers/fileFormatting')
+const { addTabs, removeLines } = require('../../helpers/fileFormatting')
 
 module.exports = ({
   projectName,

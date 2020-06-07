@@ -1,3 +1,6 @@
+const camelCase = require('camelcase')
+const pluralize = require('pluralize')
+
 module.exports = (dbClient) => async () => {
   const getTableNames = async (dbClient) => {
     return (await dbClient.listTables())
@@ -15,10 +18,10 @@ module.exports = (dbClient) => async () => {
     const description = (await dbClient.describeTable(table)).results
     const resourceInformation = {
       tableName: table,
-      resourceSingular: 'user',
-      resourcePlural: 'users',
-      ResourceSingular: 'User',
-      ResourcePlural: 'Users',
+      resourceSingular: pluralize.singular(camelCase(table)),
+      resourcePlural: pluralize.plural(camelCase(table)),
+      ResourceSingular: pluralize.singular(camelCase(table, {pascalCase: true})),
+      ResourcePlural: pluralize.plural(camelCase(table, {pascalCase: true})),
       fields: []
     }
     for (const RowDataPacket of description) {
