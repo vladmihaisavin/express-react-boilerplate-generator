@@ -1,5 +1,11 @@
 const os = require('os')
+const camelCase = require('camelcase')
 const { addTabs, newLineWithTabs, removeLines } = require('../../helpers/fileFormatting')
+const {
+  extractFieldName,
+  requiredFieldsRule,
+  optionalFieldsRule
+} = require('./commonMethods')
 
 module.exports = ({
   projectName,
@@ -109,14 +115,35 @@ module.exports = ({
   }
 
   const generateResourceResources = (relativePath) => {
-    //TO DO: update after parsing DB
     resources.forEach(resource => {
+      const requiredFields = resource.fields.filter(requiredFieldsRule)
+      const optionalFields = resource.fields.filter(optionalFieldsRule)
+      const fillableFields = requiredFields.concat(optionalFields)
       const resourceObject = {
         resourceName: resource.resourceSingular,
         resourceUrl: resource.resourcePlural,
-        listProperties: [],
-        formProperties: [],
-        formFields: []
+        listProperties: fillableFields.map((field, idx) => {
+          const properties = {
+            id: field.name,
+            label: camelCase(field.name, {pascalCase: true}),
+            disablePadding: idx === 0,
+            numeric: field.type === 'int'
+          }
+          if (field.type.includes('date')) {
+            properties.type = 'datetime-local'
+          }
+        }),
+        formProperties: fillableFields.map(field => {
+          const properties = {
+            id: field.name,
+            label: camelCase(field.name, {pascalCase: true})
+          }
+          if (field.name.includes('password')) {
+            properties.type = 'password'
+          }
+          return properties
+        }),
+        formFields: fillableFields.map(extractFieldName)
       }
 
       writeFile(relativePath.replace('userResource.json', `${resource.resourceSingular}Resource.json`), JSON.stringify(resourceObject))

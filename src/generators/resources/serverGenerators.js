@@ -2,6 +2,13 @@ const path = require('path')
 const os = require('os')
 const pluralize = require('pluralize')
 const { addTabs, removeLines } = require('../../helpers/fileFormatting')
+const { MYSQL_TYPES_TO_JOI, reconstructRawType } = require('../../databaseParser/mysqlInterpreter')
+const {
+  extractFieldName,
+  isNormalField,
+  requiredFieldsRule,
+  optionalFieldsRule
+} = require('./commonMethods')
 
 module.exports = ({
   projectName,
@@ -16,6 +23,13 @@ module.exports = ({
     writeFile
   } = fileManager
 
+  const databaseTypesInterpreters = {
+    'mysql': MYSQL_TYPES_TO_JOI
+  }
+  const databaseRawReconstructors = {
+    'mysql': reconstructRawType
+  }
+
   const generateResourcesControllers = (relativePath) => {
     const resourcesControllerStubContent = readStub(relativePath.replace('users.js', 'resourcesController.js'))
     resources.forEach(resource => {
@@ -27,14 +41,13 @@ module.exports = ({
   }
 
   const generateResourceModels = (relativePath) => {
-    //TO DO: update after parsing DB
     resources.forEach(resource => {
       const resourceObject = {
         tableName: resource.tableName,
         fields: {
-          required: [],
-          optional: [],
-          projection: []
+          required: resource.fields.filter(requiredFieldsRule).map(extractFieldName),
+          optional: resource.fields.filter(optionalFieldsRule).map(extractFieldName),
+          projection: resource.fields.map(extractFieldName)
         }
       }
 
@@ -73,11 +86,11 @@ module.exports = ({
   }
 
   const generateResourcesValidators = (relativePath) => {
-    //TO DO: update after parsing DB
     const resourcesValidatorStubContent = readStub(relativePath.replace('users.js', 'resourcesValidator.js'))
+    const databaseTypesInterpreter = databaseTypesInterpreters[databaseType]
     resources.forEach(resource => {
-      const StoreBodyRules = ''
-      const UpdateBodyRules = ''
+      const StoreBodyRules = resource.fields.filter(requiredFieldsRule).map(field => `Joi${databaseTypesInterpreter[field.type]}.required()`)
+      const UpdateBodyRules = resource.fields.filter(isNormalField).map(field => `Joi${databaseTypesInterpreter[field.type]}`)
       let content = resourcesValidatorStubContent.replace(/###StoreBodyRules###/g, StoreBodyRules)
       content = content.replace(/###UpdateBodyRules###/g, UpdateBodyRules)
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
@@ -115,12 +128,15 @@ module.exports = ({
   }
 
   const generateSchemas = (relativePath) => {
-    //TO DO: update after parsing DB
     const schemas = []
+    const reconstructor = databaseRawReconstructors[databaseType]
     resources.forEach(resource => {
       schemas.push({
         tableName: resource.tableName,
-        tableSchema: []
+        tableSchema: resource.fields.map(field => ({
+          name: field.name,
+          type: reconstructor(field)
+        }))
       })
     })
     writeFile(relativePath, JSON.stringify(schemas))

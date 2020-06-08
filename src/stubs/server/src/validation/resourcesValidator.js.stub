@@ -4,15 +4,11 @@ module.exports = {
   store: {
     body: {
 ###StoreBodyRules###
-      //name: Joi.string().required(),
-      //email: Joi.string().required()
     }
   },
   update: {
     body: {
 ###UpdateBodyRules###
-      //name: Joi.string(),
-      //email: Joi.string()
     }
   }
 }
