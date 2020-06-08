@@ -89,8 +89,10 @@ module.exports = ({
     const resourcesValidatorStubContent = readStub(relativePath.replace('users.js', 'resourcesValidator.js'))
     const databaseTypesInterpreter = databaseTypesInterpreters[databaseType]
     resources.forEach(resource => {
-      const StoreBodyRules = resource.fields.filter(requiredFieldsRule).map(field => `Joi${databaseTypesInterpreter[field.type]}.required()`)
-      const UpdateBodyRules = resource.fields.filter(isNormalField).map(field => `Joi${databaseTypesInterpreter[field.type]}`)
+      const StoreBodyRules = resource.fields.filter(requiredFieldsRule)
+        .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}.required()`).join(`,${os.EOL}`)
+      const UpdateBodyRules = resource.fields.filter(isNormalField)
+        .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}`).join(`,${os.EOL}`)
       let content = resourcesValidatorStubContent.replace(/###StoreBodyRules###/g, StoreBodyRules)
       content = content.replace(/###UpdateBodyRules###/g, UpdateBodyRules)
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)

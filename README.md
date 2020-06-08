@@ -37,7 +37,7 @@
 /server/src/routes.js
 
 ### Optional
-/server/infra/schemas.js<br>
+/server/infra/schemas.json<br>
 /server/package.json
 
 

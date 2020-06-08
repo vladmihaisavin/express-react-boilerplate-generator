@@ -129,9 +129,10 @@ module.exports = ({
             disablePadding: idx === 0,
             numeric: field.type === 'int'
           }
-          if (field.type.includes('date')) {
+          if (field.name.includes('date') || field.type === 'timestamp') {
             properties.type = 'datetime-local'
           }
+          return properties
         }),
         formProperties: fillableFields.map(field => {
           const properties = {

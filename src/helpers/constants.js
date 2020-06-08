@@ -9,7 +9,7 @@ const RELATIVE_PATHS = {
   SERVER_REPOSITORY_INDEX: '/server/src/repositories/index.js',
   SERVER_RESOURCES_VALIDATOR: '/server/src/validation/users.js',
   SERVER_ROUTES: '/server/src/routes.js',
-  SERVER_SCHEMAS: '/server/infra/schemas.js',
+  SERVER_SCHEMAS: '/server/infra/schemas.json',
   SERVER_PACKAGE_JSON: '/server/package.json',
   CLIENT_ROUTES: '/client/src/index.js',
   CLIENT_RESOURCES_SECTION: '/client/src/components/sections/Users.jsx',

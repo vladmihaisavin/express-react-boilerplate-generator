@@ -29,6 +29,9 @@ const reconstructRawType = (field) => {
       particles.push(`${MYSQL_TYPES_TO_RAW['key_' + field.key]}`)
     }
   }
+  if (field.default) {
+    particles.push(`DEFAULT \"${field.default}\"`)
+  }
   return particles.join(' ')
 }
 
