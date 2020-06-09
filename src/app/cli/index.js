@@ -104,7 +104,7 @@ inquirer.prompt(setProjectName())
 
     fs.mkdirSync(outputPath)
 
-    generateProject({
+    await generateProject({
       templatePath,
       scanPath: templatePath,
       outputPath,
@@ -113,7 +113,11 @@ inquirer.prompt(setProjectName())
       generateFile
     })
   })
+  .then(() => {
+    process.exit(0)
+  })
   .catch((err) => {
     console.error(err)
     removeDirectory(outputPath)
+    process.exit(1)
   })
