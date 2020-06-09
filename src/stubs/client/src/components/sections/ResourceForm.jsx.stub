@@ -4,6 +4,7 @@ import ResourceForm from '../structure/ResourceForm.jsx'
 import { useLoadResource } from '../../services/loadResourceHook'
 import { resourceName, resourceUrl, formProperties, formFields } from '../../static/###resourceSingular###Resource.json'
 import { createResource, updateResource } from '../../services/###resourcePlural###'
+import { sanitizeBody } from '../../helpers'
 
 function ###ResourceSingular###Form(props) {
   const resourceId = props.match.params.###resourceSingular###Id
@@ -13,10 +14,10 @@ function ###ResourceSingular###Form(props) {
     saveButtonClicked: async (resourceBody) => {
       switch(props.action) {
         case 'create':
-          await createResource(resourceBody)
+          await createResource(sanitizeBody(resourceBody))
           break
         case 'update':
-          await updateResource(resourceId, resourceBody)
+          await updateResource(resourceId, sanitizeBody(resourceBody))
           break
         default:
           break

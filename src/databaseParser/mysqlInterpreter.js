@@ -2,7 +2,7 @@
 const MYSQL_TYPES_TO_JOI = {
   'varchar(255)': '.string()',
   'int': '.number().integer()',
-  'timestamp': '.timestamp()',
+  'timestamp': '.date().timestamp()',
   'boolean': '.boolean()'
 }
 

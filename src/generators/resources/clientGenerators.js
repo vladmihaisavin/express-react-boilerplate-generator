@@ -142,6 +142,9 @@ module.exports = ({
           if (field.name.includes('password')) {
             properties.type = 'password'
           }
+          if (field.name.includes('date') || field.type === 'timestamp') {
+            properties.type = 'datetime-local'
+          }
           return properties
         }),
         formFields: fillableFields.map(extractFieldName)
