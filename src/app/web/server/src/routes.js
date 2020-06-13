@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { version } = require('../../../../../output/server/package.json')
+const { version } = require('../package.json')
 
 module.exports = ({ config, repositories }) => {
   const app = new Router()

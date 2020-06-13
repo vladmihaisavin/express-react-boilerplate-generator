@@ -9,6 +9,8 @@ const RELATIVE_PATHS = {
   SERVER_REPOSITORY_INDEX: '/server/src/repositories/index.js',
   SERVER_RESOURCES_VALIDATOR: '/server/src/validation/users.js',
   SERVER_ROUTES: '/server/src/routes.js',
+  SERVER_APP: '/server/src/app.js',
+  SERVER_INDEX: '/server/index.js',
   SERVER_SCHEMAS: '/server/infra/schemas.json',
   SERVER_PACKAGE_JSON: '/server/package.json',
   CLIENT_ROUTES: '/client/src/index.js',
@@ -27,7 +29,12 @@ const AUTH_FILES = [
   '/client/src/components/pages/Login.jsx',
   '/client/src/components/structure/ProtectedRoute.jsx',
   '/client/src/components/structure/AvatarMenu.jsx',
-  '/client/src/services/auth.js'
+  '/client/src/services/auth.js',
+  '/server/src/helpers/passport.js',
+  '/server/src/helpers/bcrypt.js',
+  '/server/src/controllers/accounts.js',
+  '/server/src/middlewares/authenticate.js',
+  '/server/src/validation/authentication.js'
 ]
 
 const getFilesToBeReplaced = (templatePath) => FILES_TO_BE_REPLACED.map(createPath(templatePath))

@@ -1,5 +1,6 @@
 require('dotenv').config()
 const config = require('./infra/config')
+const prepareDatabase = require('./infra/database')
 const createApp = require('./src/app')
 
 const setupProcessHooks = () => {
@@ -14,8 +15,8 @@ const setupProcessHooks = () => {
   })
 }
 
-const startServer = () => {
-  const app = createApp({ config })
+const startServer = (###StartServerParams###) => {
+  const app = createApp(###CreateAppOptions###)
 
   return new Promise((resolve, reject) => {
     try {
@@ -37,7 +38,8 @@ const startServer = () => {
     console.log('Application starting up')
 
     setupProcessHooks()
-    await startServer()
+    const mysqlClient = await prepareDatabase(config)
+    await startServer(###StartServerParams###)
     
     console.log('Application startup completed')
   } catch (err) {

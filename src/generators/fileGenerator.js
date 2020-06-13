@@ -22,6 +22,12 @@ const actions = ({
   [RELATIVE_PATHS.SERVER_ROUTES]: () => {
     resourceGenerators.server.generateRoutes(relativePath)
   },
+  [RELATIVE_PATHS.SERVER_APP]: () => {
+    resourceGenerators.server.generateApp(relativePath)
+  },
+  [RELATIVE_PATHS.SERVER_INDEX]: () => {
+    resourceGenerators.server.generateIndex(relativePath)
+  },
   [RELATIVE_PATHS.SERVER_SCHEMAS]: () => {
     resourceGenerators.server.generateSchemas(relativePath)
   },

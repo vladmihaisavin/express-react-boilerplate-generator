@@ -137,6 +137,42 @@ module.exports = ({
     writeFile(relativePath, content)
   }
 
+  const generateApp = (relativePath) => {
+    let content = readStub(relativePath)
+
+    const hasResources = resources.length > 0
+    if (!hasAuthentication && !hasResources) {
+      content = removeLines(content, [5, 6, 8, 17, 22, 23, 24, 28])
+      content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
+    } else if (!hasAuthentication) {
+      content = removeLines(content, [5, 6, 22, 23, 24])
+      content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config, mysqlClient }) => {')
+    } else if (!hasResources) {
+      content = removeLines(content, [8, 17, 28])
+      content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
+    } else {
+      content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config, mysqlClient }) => {')
+    }
+
+    writeFile(relativePath, content)
+  }
+  
+  const generateIndex = (relativePath) => {
+    let content = readStub(relativePath)
+
+    const hasResources = resources.length > 0
+    if (!hasResources) {
+      content = removeLines(content, [2, 40])
+      content = content.replace(/###StartServerParams###/g, '')
+      content = content.replace(/###CreateAppOptions###/g, '{ config }')
+    } else {
+      content = content.replace(/###StartServerParams###/g, 'mysqlClient')
+      content = content.replace(/###CreateAppOptions###/g, '{ config, mysqlClient }')
+    }
+
+    writeFile(relativePath, content)
+  }
+
   const generateSchemas = (relativePath) => {
     const schemas = []
     const reconstructor = databaseRawReconstructors[databaseType]
@@ -155,6 +191,9 @@ module.exports = ({
   const generatePackageJson = (relativePath) => {
     let content = readStub(relativePath)
     writeFile(relativePath, content.replace(/###projectName###/g, projectName))
+    if (!hasAuthentication) {
+      content = removeLines(content, [10, 19, 20])
+    }
   }
 
   return {
@@ -164,6 +203,8 @@ module.exports = ({
     generateRepositoryIndex,
     generateResourcesValidators,
     generateRoutes,
+    generateApp,
+    generateIndex,
     generateSchemas,
     generatePackageJson
   }
