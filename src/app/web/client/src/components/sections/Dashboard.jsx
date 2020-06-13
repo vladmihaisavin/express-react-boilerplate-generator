@@ -33,22 +33,25 @@ function WizardTitle() {
 }
 
 function getSteps() {
-  return ['Select campaign settings', 'Create an ad group', 'Create an ad']
+  return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Resources', 'Generate']
 }
 
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return `For each ad campaign that you create, you can control how much
-              you're willing to spend on clicks and conversions, which networks
-              and geographical locations you want your ads to show on, and more.`
+      return 'Please input the project name:'
     case 1:
-      return 'An ad group contains one or more ads which target a shared set of keywords.'
+      return 'Please select the authentication type:'
     case 2:
-      return `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`
+      return 'Please select the database type:'
+    case 3:
+      return 'Please set the database credentials:'
+    case 4:
+      return 'Please input the database table name for the authenticable resource:'
+    case 5:
+      return 'Please update the resources as you seem fit:'
+    case 6:
+      return 'Start generating the boilerplate'
     default:
       return 'Unknown step'
   }
@@ -58,10 +61,12 @@ function Dashboard(props) {
   const { classes } = props
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set())
+  const [optionalSteps, setOptionalSteps] = React.useState([1, 2])
   const steps = getSteps()
 
   const isStepOptional = (step) => {
-    return step === 1
+    console.log(optionalSteps)
+    return optionalSteps.includes(step)
   }
 
   const isStepSkipped = (step) => {
@@ -85,15 +90,22 @@ function Dashboard(props) {
 
   const handleSkip = () => {
     if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
       throw new Error("You can't skip a step that isn't optional.")
     }
+    let dbSelectionSkipped = activeStep === 2
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+    setActiveStep((prevActiveStep) => {
+      if (dbSelectionSkipped) {
+        return 6
+      }
+      return prevActiveStep + 1
+    })
     setSkipped((prevSkipped) => {
       const newSkipped = new Set(prevSkipped.values())
       newSkipped.add(activeStep)
+      if (dbSelectionSkipped) {
+        newSkipped.add(3).add(4).add(5)
+      }
       return newSkipped
     })
   }
@@ -145,7 +157,7 @@ function Dashboard(props) {
                           onClick={handleNext}
                           className={classes.button}
                         >
-                          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                          {activeStep === steps.length - 1 ? 'Generate' : 'Next'}
                         </Button>
                       </div>
                     </StepContent>
@@ -160,7 +172,7 @@ function Dashboard(props) {
                     All steps completed - you&aposre finished
                   </Typography>
                   <Button onClick={handleReset} className={classes.button}>
-                    Reset
+                    Start again
                   </Button>
                 </div>
               )}
