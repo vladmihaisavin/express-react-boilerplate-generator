@@ -1,0 +1,22 @@
+{
+  "name": "express-react-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["client", "server"],
+  "description": "",
+  "scripts": {
+    "client": "cd ./client && yarn start",
+    "server": "cd ./server && yarn start",
+    "local": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladmihaisavin/express-react-boilerplate.git"
+  },
+  "author": "Vlad-Mihai Savin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vladmihaisavin/express-react-boilerplate/issues"
+  },
+  "homepage": "https://github.com/vladmihaisavin/express-react-boilerplate#readme"
+}

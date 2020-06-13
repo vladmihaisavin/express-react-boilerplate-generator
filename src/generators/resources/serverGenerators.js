@@ -56,33 +56,37 @@ module.exports = ({
   }
 
   const generateResourceRepositories = (relativePath) => {
-    const resourceRepositoryStubContent = readStub(relativePath.replace('user.js', path.join(databaseType, 'resourceRepository.js')))
-    resources.forEach(resource => {
-      let content = resourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
-      writeFile(relativePath.replace('user.js', `${resource.resourceSingular}.js`), content)
-    })
+    if (databaseType) {
+      const resourceRepositoryStubContent = readStub(relativePath.replace('user.js', path.join(databaseType, 'resourceRepository.js')))
+      resources.forEach(resource => {
+        let content = resourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
+        writeFile(relativePath.replace('user.js', `${resource.resourceSingular}.js`), content)
+      })
+    }
   }
 
   const generateRepositoryIndex = (relativePath) => {
-    let content = readStub(relativePath.replace('index.js', path.join(databaseType, 'index.js')))
+    if (databaseType) {
+      let content = readStub(relativePath.replace('index.js', path.join(databaseType, 'index.js')))
 
-    content = content.replace(/###DatabaseType###/g, databaseType)
+      content = content.replace(/###DatabaseType###/g, databaseType)
 
-    if (resources.length > 0) {
-      const RepositoryImports = resources.map(resource => {
-        return `const ${resource.resourceSingular}Repository = require('./${resource.resourceSingular}')`
-      }).join(os.EOL)
-      content = content.replace(/###RepositoryImports###/g, RepositoryImports)
-      
-      const RepositoryExports = resources.map(resource => {
-        return `${resource.resourceSingular}: ${resource.resourceSingular}Repository(${databaseType}Client)`
-      }).join(os.EOL)
-      content = content.replace(/###RepositoryExports###/g, RepositoryExports)
-    } else {
-      content = removeLines(content, [0, 3])
+      if (resources.length > 0) {
+        const RepositoryImports = resources.map(resource => {
+          return `const ${resource.resourceSingular}Repository = require('./${resource.resourceSingular}')`
+        }).join(os.EOL)
+        content = content.replace(/###RepositoryImports###/g, RepositoryImports)
+        
+        const RepositoryExports = resources.map(resource => {
+          return `${resource.resourceSingular}: ${resource.resourceSingular}Repository(${databaseType}Client)`
+        }).join(os.EOL)
+        content = content.replace(/###RepositoryExports###/g, RepositoryExports)
+      } else {
+        content = removeLines(content, [0, 3])
+      }
+
+      writeFile(relativePath, content)
     }
-
-    writeFile(relativePath, content)
   }
 
   const generateResourcesValidators = (relativePath) => {
