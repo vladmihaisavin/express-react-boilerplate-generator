@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
+import StepContent from '@material-ui/core/StepContent'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
 import DashboardStyles from '../../styles/dashboard'
@@ -108,7 +109,7 @@ function Dashboard(props) {
         <div className={classes.contentWrapper}>
           <WizardTitle />
           <div className={classes.root}>
-            <Stepper activeStep={activeStep}>
+            <Stepper activeStep={activeStep} orientation="vertical">
               {steps.map((label, index) => {
                 const stepProps = {}
                 const labelProps = {}
@@ -121,12 +122,39 @@ function Dashboard(props) {
                 return (
                   <Step key={label} {...stepProps}>
                     <StepLabel {...labelProps}>{label}</StepLabel>
+                    <StepContent>
+                      <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+                      <div>
+                        <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                          Back
+                        </Button>
+                        {isStepOptional(activeStep) && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSkip}
+                            className={classes.button}
+                          >
+                            Skip
+                          </Button>
+                        )}
+
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleNext}
+                          className={classes.button}
+                        >
+                          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                        </Button>
+                      </div>
+                    </StepContent>
                   </Step>
                 )
               })}
             </Stepper>
             <div>
-              {activeStep === steps.length ? (
+              {activeStep === steps.length && (
                 <div>
                   <Typography className={classes.instructions}>
                     All steps completed - you&aposre finished
@@ -134,34 +162,6 @@ function Dashboard(props) {
                   <Button onClick={handleReset} className={classes.button}>
                     Reset
                   </Button>
-                </div>
-              ) : (
-                <div>
-                  <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-                  <div>
-                    <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                    {isStepOptional(activeStep) && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSkip}
-                        className={classes.button}
-                      >
-                        Skip
-                      </Button>
-                    )}
-
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
-                  </div>
                 </div>
               )}
             </div>
