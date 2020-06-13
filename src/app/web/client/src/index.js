@@ -18,10 +18,10 @@ ReactDOM.render(
             <Route exact path="/">
                 <Redirect to="/dashboard" />
             </Route>
-###LoginComponentCall###
 			<Route exact path="/dashboard" component={withLayout(Dashboard)} />
 
             <Route component={NotFound} />
+        </Switch>
     </Router>,
     document.getElementById("root")
 )

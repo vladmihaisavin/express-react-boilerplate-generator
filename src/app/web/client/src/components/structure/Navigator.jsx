@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
-import PeopleIcon from '@material-ui/icons/People'
 import NavigatorStyles from '../../styles/navigator'
 
 const categories = [
@@ -29,7 +28,7 @@ function Navigator(props) {
       <List disablePadding>
         <Link to='/' style={{ textDecoration: 'none' }}>
           <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
-            Project Name
+            E.R.B-Generator
           </ListItem>
         </Link>
         <Link to='/' style={{ textDecoration: 'none' }}>
@@ -42,11 +41,11 @@ function Navigator(props) {
                 primary: classes.itemPrimary,
               }}
             >
-              Project Overview
+              Dashboard
             </ListItemText>
           </ListItem>
         </Link>
-        {categories.map(({ id, children }) => (
+        {categories.map(({ id, children }) => children.length > 0 ? (
           <React.Fragment key={id}>
             <ListItem className={classes.categoryHeader}>
               <ListItemText
@@ -76,7 +75,7 @@ function Navigator(props) {
             ))}
             <Divider className={classes.divider} />
           </React.Fragment>
-        ))}
+        ) : '')}
       </List>
     </Drawer>
   )

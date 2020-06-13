@@ -30,7 +30,7 @@ function Navigator(props) {
       <List disablePadding>
         <Link to='/' style={{ textDecoration: 'none' }}>
           <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
-            Project Name
+            ###ProjectName###
           </ListItem>
         </Link>
         <Link to='/' style={{ textDecoration: 'none' }}>
@@ -43,11 +43,11 @@ function Navigator(props) {
                 primary: classes.itemPrimary,
               }}
             >
-              Project Overview
+              Dashboard
             </ListItemText>
           </ListItem>
         </Link>
-        {categories.map(({ id, children }) => (
+        {categories.map(({ id, children }) => children.length > 0 ? (
           <React.Fragment key={id}>
             <ListItem className={classes.categoryHeader}>
               <ListItemText
@@ -77,7 +77,7 @@ function Navigator(props) {
             ))}
             <Divider className={classes.divider} />
           </React.Fragment>
-        ))}
+        ) : '')}
       </List>
     </Drawer>
   )

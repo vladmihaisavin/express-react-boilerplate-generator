@@ -27,7 +27,7 @@ module.exports = ({
       content = content.replace(/###LoginComponentImport###/g, LoginComponentImport)
       content = content.replace(/###LoginComponentCall###/g, LoginComponentCall)
     } else {
-      content = removeLines(content, [5, 6, 26])
+      content = removeLines(content, [5, 6, 22])
     }
 
     const routeType = hasAuthentication ? 'ProtectedRoute' : 'Route'
@@ -98,8 +98,9 @@ module.exports = ({
       }).join(os.EOL)
       content = content.replace(/###ResourceObjects###/g, ResourceObjects)
     } else {
-      content = removeLines(content, [19])
+      content = removeLines(content, [12, 19])
     }
+    content = content.replace(/###ProjectName###/g, projectName)
 
     writeFile(relativePath, content)
   }
