@@ -13,7 +13,8 @@
     "create-express-react-app": "./index.js"
   },
   "scripts": {
-    "start:cli": "node ./src/app/cli/index.js"
+    "start:cli": "node ./src/app/cli/index.js",
+    "start:web": "cd ./src/app/web && yarn local"
   },
   "dependencies": {
     "camelcase": "^6.0.0",
