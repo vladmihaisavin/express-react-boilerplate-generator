@@ -127,7 +127,11 @@ module.exports = ({
       }).join(os.EOL)
       content = content.replace(/###ResourceRoutes###/g, ResourceRoutes)
     } else {
-      content = removeLines(content, [4, 14])
+      if (hasAuthentication) {
+        content = removeLines(content, [4, 14])
+      } else {
+        content = removeLines(content, [2, 11])
+      }
     }
 
     writeFile(relativePath, content)
