@@ -61,11 +61,10 @@ function Dashboard(props) {
   const { classes } = props
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set())
-  const [optionalSteps, setOptionalSteps] = React.useState([1, 2])
+  const [optionalSteps] = React.useState([1, 2])
   const steps = getSteps()
 
   const isStepOptional = (step) => {
-    console.log(optionalSteps)
     return optionalSteps.includes(step)
   }
 
