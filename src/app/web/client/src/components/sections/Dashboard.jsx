@@ -11,6 +11,8 @@ import { withStyles } from '@material-ui/core/styles'
 import DashboardStyles from '../../styles/dashboard'
 import { Description, WizardTitle, getStepDescription } from './DescriptionHelpers'
 import { getStepForm } from './FormHelpers'
+import Preloader from '../reusable/Preloader.jsx'
+import httpClient from '../../services/httpClient'
 
 function getSteps() {
   return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Resources', 'Generate']
@@ -34,6 +36,7 @@ const DEFAULT_PROJECT_DETAILS = {
 function Dashboard(props) {
   const { classes } = props
   const [activeStep, setActiveStep] = useState(0)
+  const [generating, setGenerating] = useState(false)
   const [skipped, setSkipped] = useState(new Set())
   const [nextDisabledFor, setNextDisabledFor] = useState(new Set([3]))
   const [optionalSteps] = useState([1, 2])
@@ -52,7 +55,7 @@ function Dashboard(props) {
     return nextDisabledFor.has(step)
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (
       (activeStep === 1 && projectDetails.authentication === 'none')
       || (activeStep === 2 && projectDetails.databaseType === 'none')
@@ -64,8 +67,24 @@ function Dashboard(props) {
         newSkipped = new Set(newSkipped.values())
         newSkipped.delete(activeStep)
       }
-  
-      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      if (activeStep === steps.length - 1) {
+        setGenerating(true)
+        let projectGenerated = false
+        try {
+          const response = await httpClient.post('/generate', projectDetails)
+          console.log(response)
+          projectGenerated = true
+        } catch (err) {
+          console.log(err)
+          projectGenerated = false
+        }
+        setGenerating(false)
+        if (projectGenerated) {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1)
+        }
+      } else {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      }
       setSkipped(newSkipped)
     }
   }
@@ -152,7 +171,7 @@ function Dashboard(props) {
                       <div className={classes.form}>
                         {getStepForm(activeStep, projectDetails, setProjectDetails, setNextDisabledFor)}
                       </div>
-                      <div>
+                      <div className={classes.buttonsWrapper}>
                         <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                           Back
                         </Button>
@@ -166,16 +185,23 @@ function Dashboard(props) {
                             Skip
                           </Button>
                         )}
-                        {!isNextDisabledForStep(activeStep) && (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleNext}
-                            className={classes.button}
-                          >
-                            {activeStep === steps.length - 1 ? 'Generate' : 'Next'}
-                          </Button>
-                        )}
+                        {
+                          !isNextDisabledForStep(activeStep)
+                            ? 
+                              generating
+                                ? <Preloader className={classes.button}/>
+                                : (
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.button}
+                                  >
+                                    {activeStep === steps.length - 1 ? 'Generate' : 'Next'}
+                                  </Button>
+                                )
+                          : ''
+                        }
                       </div>
                     </StepContent>
                   </Step>
@@ -184,11 +210,11 @@ function Dashboard(props) {
             </Stepper>
             <div>
               {activeStep === steps.length && (
-                <div>
+                <div className={classes.startAgain}>
                   <Typography className={classes.instructions}>
-                    All steps completed - you&aposre finished
+                    All steps completed - you're finished
                   </Typography>
-                  <Button onClick={handleReset} className={classes.button}>
+                  <Button onClick={handleReset} className={classes.button} variant="contained" color="primary">
                     Start again
                   </Button>
                 </div>

@@ -78,7 +78,7 @@ module.exports = ({
         content = content.replace(/###RepositoryImports###/g, RepositoryImports)
         
         const RepositoryExports = resources.map(resource => {
-          return `${resource.resourceSingular}: ${resource.resourceSingular}Repository(${databaseType}Client)`
+          return `${addTabs(1)}${resource.resourceSingular}: ${resource.resourceSingular}Repository(${databaseType}Client)`
         }).join(os.EOL)
         content = content.replace(/###RepositoryExports###/g, RepositoryExports)
       } else {

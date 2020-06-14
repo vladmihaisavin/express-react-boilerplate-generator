@@ -37,7 +37,7 @@ inquirer.prompt(setProjectName())
       .catch((err) => reject(err))
   }))
   .then((answers) => new Promise((resolve, reject) => {
-    if (answers['database_type'] !== 'none') {
+    if (answers['databaseType'] !== 'none') {
       inquirer.prompt(setDatabaseCredentials())
         .then((connectionData) => {
           resolve({ ...answers, connectionData })
@@ -48,7 +48,7 @@ inquirer.prompt(setProjectName())
     }
   }))
   .then((answers) => new Promise((resolve, reject) => {
-    if (answers['authentication'] !== 'none' && answers['database_type'] !== 'none') {
+    if (answers['authentication'] !== 'none' && answers['databaseType'] !== 'none') {
       inquirer.prompt(chooseAuthenticableResource())
         .then((newAnswer) => {
           resolve({ ...answers, ...newAnswer })
@@ -60,7 +60,7 @@ inquirer.prompt(setProjectName())
   }))
   .then(async answers => {
     const projectName = answers['projectName']
-    outputPath = `${CURR_DIR}/${projectName}`
+    outputPath = `${CURR_DIR}/temp/${projectName}`
     const templatePath = path.join(__dirname, '../../../express-react-boilerplate')
     const stubsPath = path.join(__dirname, '../../stubs')
 
@@ -68,10 +68,10 @@ inquirer.prompt(setProjectName())
     const hasAuthentication = answers['authentication'] !== 'none'
     const filesToBeOmmitted = getFilesToBeOmmitted(templatePath, hasAuthentication)
 
-    const hasDatabase = answers['database_type'] !== 'none'
+    const hasDatabase = answers['databaseType'] !== 'none'
     const databaseOptions = {
       hasDatabase,
-      type: answers['database_type'],
+      type: answers['databaseType'],
       connectionData: answers['connectionData']
     }
 
@@ -95,7 +95,7 @@ inquirer.prompt(setProjectName())
           projectName,
           hasAuthentication,
           authenticableResourceTableName: answers['authenticableResourceTable'],
-          databaseType: hasDatabase ? answers['database_type'] : '',
+          databaseType: hasDatabase ? answers['databaseType'] : '',
           resources,
           fileManager
         })

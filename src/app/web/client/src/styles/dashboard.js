@@ -35,5 +35,13 @@ export default theme => ({
   form: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2)
+  },
+  buttonsWrapper: {
+    display: 'flex'
+  },
+  startAgain: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column'
   }
 })

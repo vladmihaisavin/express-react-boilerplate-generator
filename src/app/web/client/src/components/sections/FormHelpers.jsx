@@ -175,7 +175,6 @@ function DatabaseCredentials(props) {
   )
 }
 
-
 function AuthenticableResourceTableSelect(props) {
   const { projectDetails, setProjectDetails } = props.data
   const classes = makeStyles((theme) => ({

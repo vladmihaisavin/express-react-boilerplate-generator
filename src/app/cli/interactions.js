@@ -29,7 +29,7 @@ const chooseAuthentication = () => [
 
 const chooseDatabaseType = () => [
   {
-    name: 'database_type',
+    name: 'databaseType',
     type: 'list',
     default: 'mysql',
     message: 'Please select the database type:',
