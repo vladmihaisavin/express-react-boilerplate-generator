@@ -47,25 +47,59 @@ function Dashboard(props) {
   }
 
   const handleNext = () => {
-    let newSkipped = skipped
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values())
-      newSkipped.delete(activeStep)
+    if (
+      (activeStep === 1 && projectDetails.authentication === 'none')
+      || (activeStep === 2 && projectDetails.databaseType === 'none')
+    ) {
+      handleSkip()
+    } else {
+      let newSkipped = skipped
+      if (isStepSkipped(activeStep)) {
+        newSkipped = new Set(newSkipped.values())
+        newSkipped.delete(activeStep)
+      }
+  
+      setActiveStep((prevActiveStep) => prevActiveStep + 1)
+      setSkipped(newSkipped)
     }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    setSkipped(newSkipped)
   }
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+    setActiveStep((prevActiveStep) => {
+      if (isStepSkipped(2) && activeStep > 2) {
+        return 2
+      }
+      return prevActiveStep - 1
+    })
   }
 
   const handleSkip = () => {
     if (!isStepOptional(activeStep)) {
       throw new Error("You can't skip a step that isn't optional.")
     }
-    let dbSelectionSkipped = activeStep === 2
+    const authSelectionSkipped = activeStep === 1
+    const dbSelectionSkipped = activeStep === 2
+
+    if (authSelectionSkipped) {
+      setProjectDetails({
+        ...projectDetails,
+        authentication: 'none'
+      })
+    }
+    if (dbSelectionSkipped) {
+      setProjectDetails({
+        ...projectDetails,
+        databaseType: 'none',
+        databaseCredentials: {
+          host: '127.0.0.1',
+          port: '3307',
+          user: 'myUser',
+          password: 'asd123',
+          database: 'test_db'
+        },
+        authenticableResourceTable: 'users'
+      })
+    }
 
     setActiveStep((prevActiveStep) => {
       if (dbSelectionSkipped) {
