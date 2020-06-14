@@ -9,52 +9,12 @@ import StepContent from '@material-ui/core/StepContent'
 import Button from '@material-ui/core/Button'
 import { withStyles } from '@material-ui/core/styles'
 import DashboardStyles from '../../styles/dashboard'
-
-function Description() {
-  return (
-    <React.Fragment>
-      <Typography color="textPrimary" align="center">
-        Project description
-      </Typography>
-      <Typography color="textSecondary" align="center">
-        This project was generated using the E.R.B (express-react-boilerplate) generator.<br />
-        It is used as an interface to interact with the generator.
-      </Typography>
-    </React.Fragment>
-  )
-}
-
-function WizardTitle() {
-  return (
-    <Typography color="textPrimary" align="center">
-      Follow this setup wizard to create your own boilerplate
-    </Typography>
-  )
-}
+import { Description, WizardTitle, getStepDescription } from './DescriptionHelpers'
+import { getStepForm } from './FormHelpers'
+import { useEffect } from 'react'
 
 function getSteps() {
   return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Resources', 'Generate']
-}
-
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return 'Please input the project name:'
-    case 1:
-      return 'Please select the authentication type:'
-    case 2:
-      return 'Please select the database type:'
-    case 3:
-      return 'Please set the database credentials:'
-    case 4:
-      return 'Please input the database table name for the authenticable resource:'
-    case 5:
-      return 'Please update the resources as you seem fit:'
-    case 6:
-      return 'Start generating the boilerplate'
-    default:
-      return 'Unknown step'
-  }
 }
 
 function Dashboard(props) {
@@ -62,6 +22,20 @@ function Dashboard(props) {
   const [activeStep, setActiveStep] = React.useState(0)
   const [skipped, setSkipped] = React.useState(new Set())
   const [optionalSteps] = React.useState([1, 2])
+  const [projectDetails, setProjectDetails] = React.useState({
+    projectName: 'output',
+    authentication: 'none',
+    databaseType: 'none',
+    databaseCredentials: {
+      host: '127.0.0.1',
+      port: '3307',
+      user: 'myUser',
+      password: 'asd123',
+      database: 'test_db'
+    },
+    authenticableResourceTable: 'users',
+    resources: []
+  })
   const steps = getSteps()
 
   const isStepOptional = (step) => {
@@ -113,6 +87,10 @@ function Dashboard(props) {
     setActiveStep(0)
   }
 
+  useEffect(() => {
+    console.log(projectDetails)
+  }, [projectDetails])
+
   return (
     <React.Fragment>
       <ContentSimple content={Description} />
@@ -134,7 +112,10 @@ function Dashboard(props) {
                   <Step key={label} {...stepProps}>
                     <StepLabel {...labelProps}>{label}</StepLabel>
                     <StepContent>
-                      <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+                      <Typography color="textSecondary" className={classes.instructions}>{getStepDescription(activeStep)}</Typography>
+                      <div className={classes.form}>
+                        {getStepForm(activeStep, projectDetails, setProjectDetails)}
+                      </div>
                       <div>
                         <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                           Back

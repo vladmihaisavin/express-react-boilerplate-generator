@@ -32,4 +32,8 @@ export default theme => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  form: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
+  }
 })

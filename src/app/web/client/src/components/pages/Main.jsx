@@ -10,15 +10,12 @@ import theme from '../../styles/theme'
 import { MainStyles, drawerWidth } from '../../styles/main'
 
 function Main(props) {
-  const { classes } = props
+  const { classes, content, ...otherProps } = props
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
-
-  const newProps = { ...props }
-  delete newProps.content
 
   return (
     <ThemeProvider theme={theme}>
@@ -40,7 +37,7 @@ function Main(props) {
         <div className={classes.app}>
           <Header onDrawerToggle={handleDrawerToggle} />
           <main className={classes.main}>
-            <props.content { ...newProps } />
+            <props.content { ...otherProps } />
           </main>
           <footer className={classes.footer}>
             <Copyright />
