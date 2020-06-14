@@ -33,7 +33,7 @@ const DEFAULT_PROJECT_DETAILS = {
 
 function Dashboard(props) {
   const { classes } = props
-  const [activeStep, setActiveStep] = useState(3)
+  const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
   const [nextDisabledFor, setNextDisabledFor] = useState(new Set([3]))
   const [optionalSteps] = useState([1, 2])

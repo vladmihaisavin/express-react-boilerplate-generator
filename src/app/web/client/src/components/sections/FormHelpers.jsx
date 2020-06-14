@@ -24,10 +24,21 @@ export function getStepForm(step, projectDetails, setProjectDetails, setNextDisa
     case 4:
       return <AuthenticableResourceTableSelect data={{ projectDetails, setProjectDetails }}/>
     case 5:
-      return <ResourcesEditor data={{ projectDetails, setProjectDetails }}/>
+      return <ResourcesEditor data={{ projectDetails, setProjectDetails, setNextDisabledFor }}/>
     case 6:
     default:
       return
+  }
+}
+
+function displayActionFeedback(actionStatus) {
+  switch(actionStatus) {
+    case true:
+      return <DoneIcon color="primary" />
+    case false:
+      return <ClearIcon color="secondary" />
+    default:
+      return ''
   }
 }
 
@@ -140,23 +151,12 @@ function DatabaseCredentials(props) {
     setLoading(false)
   }
 
-  const displayConnectionStatus = (connectionStatus) => {
-    switch(connectionStatus) {
-      case true:
-        return <DoneIcon color="primary" />
-      case false:
-        return <ClearIcon color="secondary" />
-      default:
-        return ''
-    }
-  }
-
   return (
     <FormControl className={classes.formControl}>
       <TextField id="host" label="Host" value={dbCredentials.host || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, host: e.target.value})}/>
       <TextField id="port" label="Port" value={dbCredentials.port || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, port: e.target.value})}/>
       <TextField id="user" label="User" value={dbCredentials.user || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, user: e.target.value})}/>
-      <TextField id="password" label="Password" value={""} type="password" onChange={(e) => setDbCredentials({ ...dbCredentials, password: e.target.value})}/>
+      <TextField id="password" label="Password" type="password" onChange={(e) => setDbCredentials({ ...dbCredentials, password: e.target.value})}/>
       <TextField id="database" label="Database Name" value={dbCredentials.database || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, database: e.target.value})}/>
       <div className={classes.button}>
         {
@@ -167,7 +167,7 @@ function DatabaseCredentials(props) {
             )
         }
         {
-          displayConnectionStatus(connectionStatus)
+          displayActionFeedback(connectionStatus)
         }
       </div>
       
@@ -184,11 +184,7 @@ function AuthenticableResourceTableSelect(props) {
       minWidth: 150
     }
   }))()
-  const resourceTables = ['users']
-
-  useEffect(() => {
-    console.log(projectDetails)
-  }, [projectDetails])
+  const resourceTables = projectDetails.resources.map(resource => resource.tableName)
 
   return (
     <FormControl className={classes.formControl}>
@@ -208,16 +204,37 @@ function AuthenticableResourceTableSelect(props) {
 }
 
 function ResourcesEditor(props) {
-  const { projectDetails, setProjectDetails } = props.data
+  const { projectDetails, setProjectDetails, setNextDisabledFor } = props.data
   const [resourcesString, setResourcesString] = useState(JSON.stringify(projectDetails.resources, undefined, 2))
+  const [isValidJsonFormat, setIsValidJsonFormat] = useState(true)
   const classes = makeStyles((theme) => ({
     jsonEditor: {
       width: '50ch'
     },
     button: {
-      marginTop: theme.spacing(2)
+      marginTop: theme.spacing(2),
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center'
     }
   }))()
+  
+  useEffect(() => {
+    console.log(projectDetails)
+  }, [projectDetails])
+
+  useEffect(() => {
+    setNextDisabledFor((prevValues) => {
+      const nextDisabledFor = new Set(prevValues.values())
+      if (isValidJsonFormat === false) {
+        nextDisabledFor.add(5)
+      } else {
+        nextDisabledFor.delete(5)
+      }
+      return nextDisabledFor
+    })
+  }, [isValidJsonFormat, setNextDisabledFor])
+
   const saveJsonFile = () => {
     try {
       const resourcesObject = JSON.parse(resourcesString)
@@ -225,9 +242,11 @@ function ResourcesEditor(props) {
         ...projectDetails,
         resources: resourcesObject
       })
+      setIsValidJsonFormat(true)
     } catch (err) {
       if(err.name === 'SyntaxError') {
         console.log('could not parse JSON file')
+        setIsValidJsonFormat(false)
       }
     }
   }
@@ -244,7 +263,12 @@ function ResourcesEditor(props) {
         onChange={(e) => setResourcesString(e.target.value)}
         onKeyDown={(e) => { if (e.keyCode === 9) e.preventDefault() }}
       />
-      <Button className={classes.button} variant="contained"  color="primary" onClick={saveJsonFile}>Save JSON file</Button>
+      <div className={classes.button}>
+        <Button variant="contained"  color="primary" onClick={saveJsonFile}>Validate JSON</Button>
+        {
+          displayActionFeedback(isValidJsonFormat)
+        }
+      </div>
     </FormControl>
   )
 }
