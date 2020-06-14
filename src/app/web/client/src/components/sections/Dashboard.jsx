@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Typography from '@material-ui/core/Typography'
 import ContentSimple from '../structure/ContentSimple.jsx'
 import Paper from '@material-ui/core/Paper'
@@ -11,7 +11,6 @@ import { withStyles } from '@material-ui/core/styles'
 import DashboardStyles from '../../styles/dashboard'
 import { Description, WizardTitle, getStepDescription } from './DescriptionHelpers'
 import { getStepForm } from './FormHelpers'
-import { useEffect } from 'react'
 
 function getSteps() {
   return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Resources', 'Generate']
@@ -19,10 +18,10 @@ function getSteps() {
 
 function Dashboard(props) {
   const { classes } = props
-  const [activeStep, setActiveStep] = React.useState(0)
-  const [skipped, setSkipped] = React.useState(new Set())
-  const [optionalSteps] = React.useState([1, 2])
-  const [projectDetails, setProjectDetails] = React.useState({
+  const [activeStep, setActiveStep] = useState(3)
+  const [skipped, setSkipped] = useState(new Set())
+  const [optionalSteps] = useState([1, 2])
+  const [projectDetails, setProjectDetails] = useState({
     projectName: 'output',
     authentication: 'none',
     databaseType: 'none',
@@ -120,10 +119,6 @@ function Dashboard(props) {
   const handleReset = () => {
     setActiveStep(0)
   }
-
-  useEffect(() => {
-    console.log(projectDetails)
-  }, [projectDetails])
 
   return (
     <React.Fragment>

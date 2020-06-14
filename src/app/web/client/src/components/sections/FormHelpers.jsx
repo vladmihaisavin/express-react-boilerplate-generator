@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -6,6 +6,11 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
+import Preloader from '../reusable/Preloader.jsx'
+import DoneIcon from '@material-ui/icons/Done'
+import ClearIcon from '@material-ui/icons/Clear'
+import httpClient from '../../services/httpClient'
+import { FormHelperText } from '@material-ui/core'
 
 export function getStepForm(step, projectDetails, setProjectDetails) {
   switch (step) {
@@ -84,9 +89,11 @@ function DatabaseSelect(props) {
   )
 }
 
-
 function DatabaseCredentials(props) {
   const { projectDetails, setProjectDetails } = props.data
+  const [dbCredentials, setDbCredentials] = useState(projectDetails.databaseCredentials)
+  const [loading, setLoading] = useState(false)
+  const [connectionStatus, setConnectionStatus] = useState(null)
   const classes = makeStyles((theme) => ({
     root: {
       '& > *': {
@@ -95,17 +102,61 @@ function DatabaseCredentials(props) {
       },
     },
     button: {
-      marginTop: theme.spacing(2)
+      marginTop: theme.spacing(2),
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center'
     }
   }))()
+
+  const testDbConnection = async () => {
+    setConnectionStatus(null)
+    setLoading(true)
+    const response = await httpClient.get('/resources')
+    if (response.status === 200) {
+      console.log(response)
+      setConnectionStatus(true)
+    } else {
+      setConnectionStatus(false)
+    }
+    setLoading(false)
+  }
+
+  const displayConnectionStatus = (connectionStatus) => {
+    switch(connectionStatus) {
+      case true:
+        return <DoneIcon color="primary" />
+      case false:
+        return <ClearIcon color="secondary" />
+      default:
+        return ''
+    }
+  }
+
+  useEffect(() => {
+    console.log(projectDetails)
+  }, [projectDetails])
+
   return (
     <FormControl className={classes.formControl}>
-      <TextField id="host" label="Host" value={projectDetails.databaseCredentials.host || ""} />
-      <TextField id="port" label="Port" value={projectDetails.databaseCredentials.port || ""} />
-      <TextField id="user" label="User" value={projectDetails.databaseCredentials.user || ""} />
-      <TextField id="password" label="Password" value={""} type="password" />
-      <TextField id="database" label="Database Name" value={projectDetails.databaseCredentials.database || ""} />
-      <Button className={classes.button} variant="contained">Test connection</Button>
+      <TextField id="host" label="Host" value={dbCredentials.host || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, host: e.target.value})}/>
+      <TextField id="port" label="Port" value={dbCredentials.port || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, port: e.target.value})}/>
+      <TextField id="user" label="User" value={dbCredentials.user || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, user: e.target.value})}/>
+      <TextField id="password" label="Password" value={""} type="password" onChange={(e) => setDbCredentials({ ...dbCredentials, password: e.target.value})}/>
+      <TextField id="database" label="Database Name" value={dbCredentials.database || ""} onChange={(e) => setDbCredentials({ ...dbCredentials, database: e.target.value})}/>
+      <div className={classes.button}>
+        {
+          loading
+            ? <Preloader />
+            : (
+              <Button variant="contained" onClick={testDbConnection}>Test connection</Button>
+            )
+        }
+        {
+          displayConnectionStatus(connectionStatus)
+        }
+      </div>
+      
     </FormControl>
   )
 }
@@ -140,7 +191,7 @@ function AuthenticableResourceTableSelect(props) {
 
 function ResourcesEditor(props) {
   const { projectDetails, setProjectDetails } = props.data
-  const [resourcesString, setResourcesString] = React.useState(JSON.stringify(projectDetails.resources, undefined, 2))
+  const [resourcesString, setResourcesString] = useState(JSON.stringify(projectDetails.resources, undefined, 2))
   const classes = makeStyles((theme) => ({
     jsonEditor: {
       width: '50ch'
