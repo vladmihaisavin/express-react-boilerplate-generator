@@ -16,25 +16,28 @@ function getSteps() {
   return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Resources', 'Generate']
 }
 
+const DEFAULT_PROJECT_DETAILS = {
+  projectName: 'output',
+  authentication: 'none',
+  databaseType: 'mysql',
+  databaseCredentials: {
+    host: '127.0.0.1',
+    port: '3307',
+    user: 'myUser',
+    password: 'asd123',
+    database: 'test_db'
+  },
+  authenticableResourceTable: 'users',
+  resources: []
+}
+
 function Dashboard(props) {
   const { classes } = props
   const [activeStep, setActiveStep] = useState(3)
   const [skipped, setSkipped] = useState(new Set())
+  const [nextDisabledFor, setNextDisabledFor] = useState(new Set([3]))
   const [optionalSteps] = useState([1, 2])
-  const [projectDetails, setProjectDetails] = useState({
-    projectName: 'output',
-    authentication: 'none',
-    databaseType: 'none',
-    databaseCredentials: {
-      host: '127.0.0.1',
-      port: '3307',
-      user: 'myUser',
-      password: 'asd123',
-      database: 'test_db'
-    },
-    authenticableResourceTable: 'users',
-    resources: []
-  })
+  const [projectDetails, setProjectDetails] = useState(DEFAULT_PROJECT_DETAILS)
   const steps = getSteps()
 
   const isStepOptional = (step) => {
@@ -43,6 +46,10 @@ function Dashboard(props) {
 
   const isStepSkipped = (step) => {
     return skipped.has(step)
+  }
+  
+  const isNextDisabledForStep = (step) => {
+    return nextDisabledFor.has(step)
   }
 
   const handleNext = () => {
@@ -143,7 +150,7 @@ function Dashboard(props) {
                     <StepContent>
                       <Typography color="textSecondary" className={classes.instructions}>{getStepDescription(activeStep)}</Typography>
                       <div className={classes.form}>
-                        {getStepForm(activeStep, projectDetails, setProjectDetails)}
+                        {getStepForm(activeStep, projectDetails, setProjectDetails, setNextDisabledFor)}
                       </div>
                       <div>
                         <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
@@ -159,15 +166,16 @@ function Dashboard(props) {
                             Skip
                           </Button>
                         )}
-
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleNext}
-                          className={classes.button}
-                        >
-                          {activeStep === steps.length - 1 ? 'Generate' : 'Next'}
-                        </Button>
+                        {!isNextDisabledForStep(activeStep) && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleNext}
+                            className={classes.button}
+                          >
+                            {activeStep === steps.length - 1 ? 'Generate' : 'Next'}
+                          </Button>
+                        )}
                       </div>
                     </StepContent>
                   </Step>

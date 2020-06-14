@@ -10,9 +10,8 @@ import Preloader from '../reusable/Preloader.jsx'
 import DoneIcon from '@material-ui/icons/Done'
 import ClearIcon from '@material-ui/icons/Clear'
 import httpClient from '../../services/httpClient'
-import { FormHelperText } from '@material-ui/core'
 
-export function getStepForm(step, projectDetails, setProjectDetails) {
+export function getStepForm(step, projectDetails, setProjectDetails, setNextDisabledFor) {
   switch (step) {
     case 0:
       return <ProjectNameInput data={{ projectDetails, setProjectDetails }}/>
@@ -21,7 +20,7 @@ export function getStepForm(step, projectDetails, setProjectDetails) {
     case 2:
       return <DatabaseSelect data={{ projectDetails, setProjectDetails }}/>
     case 3:
-      return <DatabaseCredentials data={{ projectDetails, setProjectDetails }}/>
+      return <DatabaseCredentials data={{ projectDetails, setProjectDetails, setNextDisabledFor }}/>
     case 4:
       return <AuthenticableResourceTableSelect data={{ projectDetails, setProjectDetails }}/>
     case 5:
@@ -90,7 +89,7 @@ function DatabaseSelect(props) {
 }
 
 function DatabaseCredentials(props) {
-  const { projectDetails, setProjectDetails } = props.data
+  const { projectDetails, setProjectDetails, setNextDisabledFor } = props.data
   const [dbCredentials, setDbCredentials] = useState(projectDetails.databaseCredentials)
   const [loading, setLoading] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState(null)
@@ -112,13 +111,32 @@ function DatabaseCredentials(props) {
   const testDbConnection = async () => {
     setConnectionStatus(null)
     setLoading(true)
-    const response = await httpClient.get('/resources')
-    if (response.status === 200) {
-      console.log(response)
-      setConnectionStatus(true)
-    } else {
-      setConnectionStatus(false)
+    let connectionStatus
+    try {
+      const response = await httpClient.post('/resources', { ...dbCredentials, databaseType: projectDetails.databaseType })
+      if (response.status === 200) {
+        setProjectDetails({
+          ...projectDetails,
+          resources: response.data
+        })
+        connectionStatus = true
+      } else {
+        connectionStatus = false
+      }
+    } catch (err) {
+      connectionStatus = false
     }
+    
+    setNextDisabledFor((prevValues) => {
+      const nextDisabledFor = new Set(prevValues.values())
+      if ([null, false].includes(connectionStatus)) {
+        nextDisabledFor.add(3)
+      } else {
+        nextDisabledFor.delete(3)
+      }
+      return nextDisabledFor
+    })
+    setConnectionStatus(connectionStatus)
     setLoading(false)
   }
 
@@ -132,10 +150,6 @@ function DatabaseCredentials(props) {
         return ''
     }
   }
-
-  useEffect(() => {
-    console.log(projectDetails)
-  }, [projectDetails])
 
   return (
     <FormControl className={classes.formControl}>
@@ -171,6 +185,10 @@ function AuthenticableResourceTableSelect(props) {
     }
   }))()
   const resourceTables = ['users']
+
+  useEffect(() => {
+    console.log(projectDetails)
+  }, [projectDetails])
 
   return (
     <FormControl className={classes.formControl}>
