@@ -9,6 +9,7 @@ const { removeDirectory, createFileManager } = require('../../../../helpers/file
 const createFileGenerator = require('../../../../generators/fileGenerator')
 const createClientGenerators = require('../../../../generators/resources/clientGenerators')
 const createServerGenerators = require('../../../../generators/resources/serverGenerators')
+const { zipDirectory } = require('../../../../helpers/fileSystem')
 const ROOT_DIR = path.join(process.cwd(), '../../../..')
 
 module.exports = ({ config }) => {
@@ -85,7 +86,16 @@ module.exports = ({ config }) => {
         filesToBeOmmitted,
         generateFile
       })
-      return res.status(200).json({})
+
+      const zip = zipDirectory(outputPath)
+      const downloadName = `${projectName}.zip`
+      // const data = zip.toBuffer()
+      const data = zip.writeZip(`${outputPath}.zip`)
+      // res.set('Content-Type', 'application/octet-stream')
+      // res.set('Content-Disposition', `attachment; filename=${downloadName}`)
+      // res.set('Content-Length', data.length)
+      // res.send(data)
+      res.sendStatus(200)
     } catch (err) {
       removeDirectory(outputPath)
       return res.status(500).json(err)
