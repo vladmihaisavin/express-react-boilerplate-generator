@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const AdmZip = require('adm-zip')
 
 const removeDirectory = (pathName) => {
   if (fs.existsSync(pathName)) {
@@ -15,24 +16,20 @@ const removeDirectory = (pathName) => {
   }
 }
 
-const addFilesToZip = (pathName, zip) => {
-  if (fs.existsSync(pathName)) {
-    fs.readdirSync(pathName).forEach((file, index) => {
-      const currPath = path.join(pathName, file)
-      if (fs.lstatSync(currPath).isDirectory()) {
-        addFilesToZip(currPath)
-      } else {
-        zip.addLocalFile(currPath)
-      }
-    })
-  }
-}
-
-const zipDirectory = (outputPath) => {
+const zipDirectory = (outputPath) => new Promise((resolve, reject) => {
   const zip = new AdmZip()
-  addFilesToZip(outputPath, zip)
-  return zip
-}
+  zip.addLocalFolderAsync(outputPath, (success, err) => {
+    if (err) {
+      return reject(err)
+    }
+    zip.writeZip(`${outputPath}.zip`, (err) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
+    })
+  })
+})
 
 module.exports = {
   removeDirectory,

@@ -87,17 +87,21 @@ module.exports = ({ config }) => {
         generateFile
       })
 
-      const zip = zipDirectory(outputPath)
-      const downloadName = `${projectName}.zip`
-      // const data = zip.toBuffer()
-      const data = zip.writeZip(`${outputPath}.zip`)
-      // res.set('Content-Type', 'application/octet-stream')
-      // res.set('Content-Disposition', `attachment; filename=${downloadName}`)
-      // res.set('Content-Length', data.length)
-      // res.send(data)
+      await zipDirectory(outputPath)
+      removeDirectory(outputPath)
       res.sendStatus(200)
     } catch (err) {
+      console.log('err', err)
       removeDirectory(outputPath)
+      return res.status(500).json(err)
+    }
+  })
+
+  app.get('/boilerplates/:projectName', (req, res) => {
+    try {
+      res.download(`${ROOT_DIR}/temp/${req.params.projectName}.zip`)
+    } catch (err) {
+      console.log('err', err)
       return res.status(500).json(err)
     }
   })

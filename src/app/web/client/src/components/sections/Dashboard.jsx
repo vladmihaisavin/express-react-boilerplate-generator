@@ -71,8 +71,14 @@ function Dashboard(props) {
         setGenerating(true)
         let projectGenerated = false
         try {
-          const response = await httpClient.post('/generate', projectDetails)
-          console.log(response)
+          await httpClient.post('/generate', projectDetails)
+          const download = await httpClient.get(`/boilerplates/${projectDetails.projectName}`, { responseType: 'blob'})
+          const url = window.URL.createObjectURL(new Blob([download.data]))
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', `${projectDetails.projectName}.zip`)
+          document.body.appendChild(link)
+          link.click()
           projectGenerated = true
         } catch (err) {
           console.log(err)
