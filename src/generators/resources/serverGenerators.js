@@ -1,7 +1,7 @@
 const path = require('path')
 const os = require('os')
 const pluralize = require('pluralize')
-const { addTabs, removeLines } = require('../../helpers/fileFormatting')
+const { addSpaces, addTabs, removeLines } = require('../../helpers/fileFormatting')
 const { MYSQL_TYPES_TO_JOI, MYSQL_TYPES_TO_SWAGGER, reconstructRawType } = require('../../databaseParser/mysqlInterpreter')
 const {
   extractFieldName,
@@ -43,7 +43,7 @@ module.exports = ({
       const result = []
       if (fieldDetails) {
         Object.keys(fieldDetails).forEach(key => {
-          result.push(`${addTabs(1)} * ${addTabs(7)}${key}: ${fieldDetails[key]}`)
+          result.push(`${addTabs(1)} *${addSpaces(15)}${key}: ${fieldDetails[key]}`)
         })
       }
       return result.join(os.EOL)
@@ -55,12 +55,12 @@ module.exports = ({
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
 
       const ResourceProperties = resource.fields.filter(isNormalField).map(field => {
-        return `${addTabs(1)} * ${addTabs(6)}${field.name}:${os.EOL}${getResourcePropertyTypes(field)}`
+        return `${addTabs(1)} *${addSpaces(13)}${field.name}:${os.EOL}${getResourcePropertyTypes(field)}`
       }).join(os.EOL)
       content = content.replace(/###ResourceProperties###/g, ResourceProperties)
       
       const RequiredResourceProperties = resource.fields.filter(requiredFieldsRule).map(field => {
-        return `${addTabs(1)} * ${addTabs(5)}- ${field.name}`
+        return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
       }).join(os.EOL)
       content = content.replace(/###RequiredResourceProperties###/g, RequiredResourceProperties)
 

@@ -15,10 +15,19 @@ const addTabs = (occurences) => {
   return result
 }
 
+const addSpaces = (occurences) => {
+  let result = ''
+  for (let i = 0; i < occurences; ++i) {
+    result += ' '
+  }
+  return result
+}
+
 const newLineWithTabs = (tabNo) => `${os.EOL}${addTabs(tabNo)}`
 
 module.exports = {
   removeLines,
   addTabs,
+  addSpaces,
   newLineWithTabs
 }
