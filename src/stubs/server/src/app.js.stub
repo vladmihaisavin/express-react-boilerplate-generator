@@ -4,6 +4,8 @@ const fs = require('fs')
 const morgan = require('morgan')
 const path = require('path')
 const passport = require('passport')
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
 const passportConfig = require('./helpers/passport')
 const routes = require('./routes')
 const createRepositories = require('./repositories')
@@ -28,6 +30,17 @@ const setupAccessLogs = (app) => {
     config,
     repositories
   }))
+
+  const swaggerOptions = {
+    swaggerDefinition: config.get('swaggerDefinition'),
+    apis: ['./src/controllers/*.js'],
+  }
+  const swaggerSpec = swaggerJSDoc(swaggerOptions)
+  app.get('/swagger.json', function (req, res) {
+    res.setHeader('Content-Type', 'application/json')
+    res.send(swaggerSpec)
+  })
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
   app.all('*', (req, res) => {
     res.sendStatus(404)

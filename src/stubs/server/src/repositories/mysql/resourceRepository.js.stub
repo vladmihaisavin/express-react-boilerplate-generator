@@ -30,7 +30,7 @@ module.exports = (mysqlClient) => {
     try {
       return prepareResults(await mysqlClient.fetch(
         ###resourceSingular###Model.tableName,
-        generateSimpleFilterObject(['id'], id),
+        generateSimpleFilterObject(['id'], [id]),
         ###resourceSingular###Model.fields.projection
       ))
     } catch (err) {
@@ -64,7 +64,7 @@ module.exports = (mysqlClient) => {
       return prepareResults(await mysqlClient.update(
         ###resourceSingular###Model.tableName,
         body,
-        generateSimpleFilterObject(['id'], id),
+        generateSimpleFilterObject(['id'], [id]),
       ))
     } catch (err) {
       console.error(err)
@@ -76,7 +76,7 @@ module.exports = (mysqlClient) => {
     try {
       return prepareResults(await mysqlClient.destroy(
         ###resourceSingular###Model.tableName,
-        generateSimpleFilterObject(['id'], id),
+        generateSimpleFilterObject(['id'], [id]),
       ))
     } catch (err) {
       console.error(err)

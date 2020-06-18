@@ -142,13 +142,14 @@ module.exports = ({
 
     const hasResources = resources.length > 0
     if (!hasAuthentication && !hasResources) {
-      content = removeLines(content, [5, 6, 8, 17, 22, 23, 24, 28])
+      // content = removeLines(content, [5, 6, 8, 17, 22, 23, 24, 28])
+      content = removeLines(content, [5, 8, 10, 19, 24, 25, 26, 30])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
     } else if (!hasAuthentication) {
-      content = removeLines(content, [5, 6, 22, 23, 24])
+      content = removeLines(content, [5, 8, 24, 25, 26])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config, mysqlClient }) => {')
     } else if (!hasResources) {
-      content = removeLines(content, [8, 17, 28])
+      content = removeLines(content, [10, 19, 30])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
     } else {
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config, mysqlClient }) => {')
