@@ -44,7 +44,7 @@ module.exports = ({
     const ResourceRoutes = resources.map(resource => {
       const ResourceListRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}" component={withLayout(${resource.ResourcePlural})} />`
       const ResourceNewRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}/new" component={withLayout(${resource.ResourceSingular}Form)} action='create' />`
-      const ResourceEditRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}/edit/:userId" component={withLayout(${resource.ResourceSingular}Form)} action='update' />`
+      const ResourceEditRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}/edit/:${resource.resourceSingular}Id" component={withLayout(${resource.ResourceSingular}Form)} action='update' />`
       return `${ResourceListRoute}${os.EOL}${ResourceNewRoute}${os.EOL}${ResourceEditRoute}`
     }).join(os.EOL)
     content = content.replace(/###ResourceRoutes###/g, ResourceRoutes)
