@@ -95,7 +95,7 @@ module.exports = ({
     if (resources.length > 0) {
       const ResourceObjects = resources.map(resource => {
         return `${addTabs(3)}{ id: '${resource.ResourcePlural}', icon: <PeopleIcon />, active: true, url: '/${resource.resourcePlural}' }`
-      }).join(os.EOL)
+      }).join(`,${os.EOL}`)
       content = content.replace(/###ResourceObjects###/g, ResourceObjects)
     } else {
       content = removeLines(content, [12, 19])
