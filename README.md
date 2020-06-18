@@ -34,7 +34,9 @@
 /server/src/repositories/user.js<br>
 /server/src/repositories/index.js<br>
 /server/src/validation/users.js<br>
-/server/src/routes.js
+/server/src/routes.js<br>
+/server/src/app.js<br>
+/server/index.js<br>
 
 ### Optional
 /server/infra/schemas.json<br>
@@ -47,6 +49,7 @@
 /client/src/components/sections/Users.jsx<br>
 /client/src/components/sections/UserForm.jsx<br>
 /client/src/components/structure/Header.jsx<br>
+/client/src/components/structure/Navigator.jsx<br>
 /client/src/services/users.js<br>
 /client/src/static/userResource.json
 
