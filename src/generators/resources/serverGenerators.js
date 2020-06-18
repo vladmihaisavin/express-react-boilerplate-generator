@@ -108,10 +108,10 @@ module.exports = ({
     
     if (hasAuthentication) {
       const authenticableResourceName = pluralize.singular(authenticableResourceTableName)
-      const AccountsRoutes = `${addTabs(1)}app.use('/accounts', accounts({ config, ${authenticableResourceName}Repository: repositories.${authenticableResourceName} }))`
-      const AccountsControllerImport = `const accounts = require('./controllers/accounts')`
-      content = content.replace(/###AccountsRoutes###/g, AccountsRoutes)
-      content = content.replace(/###AccountsControllerImport###/g, AccountsControllerImport)
+      const AuthRoutes = `${addTabs(1)}app.use('/auth', auth({ config, ${authenticableResourceName}Repository: repositories.${authenticableResourceName} }))`
+      const AuthControllerImport = `const auth = require('./controllers/auth')`
+      content = content.replace(/###AuthRoutes###/g, AuthRoutes)
+      content = content.replace(/###AuthControllerImport###/g, AuthControllerImport)
     } else {
       content = removeLines(content, [2, 3, 13])
     }

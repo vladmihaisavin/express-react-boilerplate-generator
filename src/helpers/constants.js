@@ -32,9 +32,9 @@ const AUTH_FILES = [
   '/client/src/services/auth.js',
   '/server/src/helpers/passport.js',
   '/server/src/helpers/bcrypt.js',
-  '/server/src/controllers/accounts.js',
+  '/server/src/controllers/auth.js',
   '/server/src/middlewares/authenticate.js',
-  '/server/src/validation/authentication.js'
+  '/server/src/validation/auth.js'
 ]
 
 const getFilesToBeReplaced = (templatePath) => FILES_TO_BE_REPLACED.map(createPath(templatePath))

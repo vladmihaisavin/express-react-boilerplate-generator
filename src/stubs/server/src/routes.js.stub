@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const { version } = require('../package.json')
 const authenticate = require('./middlewares/authenticate')
-###AccountsControllerImport###
+###AuthControllerImport###
 ###ResourceControllerImports###
 
 module.exports = ({ config, repositories }) => {
@@ -11,7 +11,7 @@ module.exports = ({ config, repositories }) => {
     res.json({ version })
   })
   //e.g. app.use('/path', ...middlewares, controller({ config, resourceRepository}))
-###AccountsRoutes###
+###AuthRoutes###
 ###ResourceRoutes###
 
   return app
