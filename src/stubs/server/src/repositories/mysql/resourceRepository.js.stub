@@ -1,5 +1,5 @@
 const ###resourceSingular###Model = require('../models/###resourceSingular###.json')
-const { hashPassword } = require('../helpers/bcrypt')
+###HashPasswordImport###
 const { getCurrentTimestamp } = require('../helpers/moment')
 const { generateSimpleFilterObject, prepareResults } = require('../helpers/mysqlClient')
 
@@ -16,7 +16,7 @@ module.exports = (mysqlClient) => {
   const store = async (body) => {
     try {
       const now = getCurrentTimestamp()
-      body.password = await hashPassword(body.password)
+###StoreHashPassword###
       body.createdAt = now
       body.updatedAt = now
       return prepareResults(await mysqlClient.store(###resourceSingular###Model.tableName, body))
@@ -57,9 +57,7 @@ module.exports = (mysqlClient) => {
 
   const update = async (id, body) => {
     try {
-      if (body.password) {
-        body.password = await hashPassword(body.password)
-      }
+###UpdateHashPassword###
       body.updatedAt = getCurrentTimestamp()
       return prepareResults(await mysqlClient.update(
         ###resourceSingular###Model.tableName,

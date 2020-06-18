@@ -88,6 +88,17 @@ module.exports = ({
       const resourceRepositoryStubContent = readStub(relativePath.replace('user.js', path.join(databaseType, 'resourceRepository.js')))
       resources.forEach(resource => {
         let content = resourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
+
+        if (resource.tableName === authenticableResourceTableName) {
+          const HashPasswordImport = `const { hashPassword } = require('../helpers/bcrypt')`
+          const StoreHashPassword = `${addTabs(3)}body.password = await hashPassword(body.password)`
+          const UpdateHashPassword = `${addTabs(3)}if (body.password) {${os.EOL}${addTabs(4)}body.password = await hashPassword(body.password)${os.EOL}${addTabs(3)}}${os.EOL}`
+          content = content.replace(/###HashPasswordImport###/g, HashPasswordImport)
+          content = content.replace(/###StoreHashPassword###/g, StoreHashPassword)
+          content = content.replace(/###UpdateHashPassword###/g, UpdateHashPassword)
+        } else {
+          content = removeLines(content, [1, 18, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59])
+        }
         writeFile(relativePath.replace('user.js', `${resource.resourceSingular}.js`), content)
       })
     }
