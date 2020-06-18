@@ -8,12 +8,12 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * List all resources
    * @swagger
-   * /api/users:
+   * /api/###resourcePlural###:
    *   get:
    *     tags:
-   *       - Users
-   *     name: List users
-   *     summary: Lists all the users
+   *       - ###ResourcePlural###
+   *     name: List ###resourcePlural###
+   *     summary: Lists all the ###resourcePlural###
    *     security:
    *       - bearerAuth: []
    *     consumes:
@@ -22,7 +22,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       - application/json
    *     responses:
    *       200:
-   *         description: An array of user objects
+   *         description: An array of ###resourceSingular### objects
    *       401:
    *         description: Not authorized to access this resource
    *       422:
@@ -42,12 +42,12 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Create a new resource
    * @swagger
-   * /api/users:
+   * /api/###resourcePlural###:
    *   post:
    *     tags:
-   *       - Users
-   *     name: Create user
-   *     summary: Creates a new user
+   *       - ###ResourcePlural###
+   *     name: Create ###resourceSingular###
+   *     summary: Creates a new ###resourceSingular###
    *     security:
    *       - bearerAuth: []
    *     consumes:
@@ -60,20 +60,12 @@ module.exports = (###resourceSingular###Repository) => {
    *         schema:
    *           type: object
    *           properties:
-   *             name:
-   *               type: string
-   *             email:
-   *               type: string
-   *             password:
-   *               type: string
-   *               format: password
+###ResourceProperties###
    *         required:
-   *           - name
-   *           - email
-   *           - password
+###RequiredResourceProperties###
    *     responses:
    *       200:
-   *         description: A user object
+   *         description: A ###resourceSingular### object
    *       401:
    *         description: Not authorized to access this resource
    *       422:
@@ -93,12 +85,12 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Show an existing resource
    * @swagger
-   * /api/users/{id}:
+   * /api/###resourcePlural###/{id}:
    *   get:
    *     tags:
-   *       - Users
-   *     name: Show user
-   *     summary: Shows an existing user
+   *       - ###ResourcePlural###
+   *     name: Show ###resourceSingular###
+   *     summary: Shows an existing ###resourceSingular###
    *     security:
    *       - bearerAuth: []
    *     consumes:
@@ -114,7 +106,7 @@ module.exports = (###resourceSingular###Repository) => {
    *           - id
    *     responses:
    *       200:
-   *         description: A user object
+   *         description: A ###resourceSingular### object
    *       401:
    *         description: Not authorized to access this resource
    *       404:
@@ -139,12 +131,12 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Update an existing resource
    * @swagger
-   * /api/users/{id}:
+   * /api/###resourcePlural###/{id}:
    *   put:
    *     tags:
-   *       - Users
-   *     name: Update user
-   *     summary: Updates an existing user
+   *       - ###ResourcePlural###
+   *     name: Update ###resourceSingular###
+   *     summary: Updates an existing ###resourceSingular###
    *     security:
    *       - bearerAuth: []
    *     consumes:
@@ -157,13 +149,7 @@ module.exports = (###resourceSingular###Repository) => {
    *         schema:
    *           type: object
    *           properties:
-   *             name:
-   *               type: string
-   *             email:
-   *               type: string
-   *             password:
-   *               type: string
-   *               format: password
+###ResourceProperties###
    *       - name: id
    *         in: path
    *         schema:
@@ -197,12 +183,12 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Destroy an existing resource
    * @swagger
-   * /api/users/{id}:
+   * /api/###resourcePlural###/{id}:
    *   delete:
    *     tags:
-   *       - Users
-   *     name: Delete user
-   *     summary: Deletes an existing user
+   *       - ###ResourcePlural###
+   *     name: Delete ###resourceSingular###
+   *     summary: Deletes an existing ###resourceSingular###
    *     security:
    *       - bearerAuth: []
    *     consumes:

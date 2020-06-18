@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 const pluralize = require('pluralize')
 const { addTabs, removeLines } = require('../../helpers/fileFormatting')
-const { MYSQL_TYPES_TO_JOI, reconstructRawType } = require('../../databaseParser/mysqlInterpreter')
+const { MYSQL_TYPES_TO_JOI, MYSQL_TYPES_TO_SWAGGER, reconstructRawType } = require('../../databaseParser/mysqlInterpreter')
 const {
   extractFieldName,
   isNormalField,
@@ -24,7 +24,12 @@ module.exports = ({
   } = fileManager
 
   const databaseTypesInterpreters = {
-    'mysql': MYSQL_TYPES_TO_JOI
+    joi: {
+      mysql: MYSQL_TYPES_TO_JOI
+    },
+    swagger: {
+      mysql: MYSQL_TYPES_TO_SWAGGER
+    }
   }
   const databaseRawReconstructors = {
     'mysql': reconstructRawType
@@ -32,10 +37,33 @@ module.exports = ({
 
   const generateResourcesControllers = (relativePath) => {
     const resourcesControllerStubContent = readStub(relativePath.replace('users.js', 'resourcesController.js'))
+    const databaseTypesInterpreter = databaseTypesInterpreters.swagger[databaseType]
+    const getResourcePropertyTypes = (field) => {
+      const fieldDetails = databaseTypesInterpreter[field.type]
+      const result = []
+      if (fieldDetails) {
+        Object.keys(fieldDetails).forEach(key => {
+          result.push(`${addTabs(1)} * ${addTabs(7)}${key}: ${fieldDetails[key]}`)
+        })
+      }
+      return result.join(os.EOL)
+    }
+
     resources.forEach(resource => {
       let content = resourcesControllerStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
+      content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+
+      const ResourceProperties = resource.fields.filter(isNormalField).map(field => {
+        return `${addTabs(1)} * ${addTabs(6)}${field.name}:${os.EOL}${getResourcePropertyTypes(field)}`
+      }).join(os.EOL)
+      content = content.replace(/###ResourceProperties###/g, ResourceProperties)
       
+      const RequiredResourceProperties = resource.fields.filter(requiredFieldsRule).map(field => {
+        return `${addTabs(1)} * ${addTabs(5)}- ${field.name}`
+      }).join(os.EOL)
+      content = content.replace(/###RequiredResourceProperties###/g, RequiredResourceProperties)
+
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
     })
   }
@@ -91,7 +119,7 @@ module.exports = ({
 
   const generateResourcesValidators = (relativePath) => {
     const resourcesValidatorStubContent = readStub(relativePath.replace('users.js', 'resourcesValidator.js'))
-    const databaseTypesInterpreter = databaseTypesInterpreters[databaseType]
+    const databaseTypesInterpreter = databaseTypesInterpreters.joi[databaseType]
     resources.forEach(resource => {
       const StoreBodyRules = resource.fields.filter(requiredFieldsRule)
         .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}.required()`).join(`,${os.EOL}`)
@@ -142,7 +170,6 @@ module.exports = ({
 
     const hasResources = resources.length > 0
     if (!hasAuthentication && !hasResources) {
-      // content = removeLines(content, [5, 6, 8, 17, 22, 23, 24, 28])
       content = removeLines(content, [5, 8, 10, 19, 24, 25, 26, 30])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
     } else if (!hasAuthentication) {

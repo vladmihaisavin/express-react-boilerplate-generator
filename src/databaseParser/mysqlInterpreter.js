@@ -6,6 +6,23 @@ const MYSQL_TYPES_TO_JOI = {
   'boolean': '.boolean()'
 }
 
+const MYSQL_TYPES_TO_SWAGGER = {
+  'varchar(255)': {
+    type: 'string'
+  },
+  'int': {
+    type: 'integer',
+    format: 'int64'
+  },
+  'timestamp': {
+    type: "string",
+    format: "date-time"
+  },
+  'boolean': {
+    type: "boolean"
+  }
+}
+
 const MYSQL_TYPES_TO_RAW = {
   'varchar(255)': 'VARCHAR(255)',
   'int': 'INT',
@@ -37,5 +54,6 @@ const reconstructRawType = (field) => {
 
 module.exports = {
   MYSQL_TYPES_TO_JOI,
+  MYSQL_TYPES_TO_SWAGGER,
   reconstructRawType
 }
