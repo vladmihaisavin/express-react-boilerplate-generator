@@ -63,6 +63,11 @@ module.exports = ({
         return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
       }).join(os.EOL)
       content = content.replace(/###RequiredResourceProperties###/g, RequiredResourceProperties)
+      
+      const AllRequiredResourceProperties = resource.fields.filter(isNormalField).map(field => {
+        return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
+      }).join(os.EOL)
+      content = content.replace(/###AllRequiredResourceProperties###/g, AllRequiredResourceProperties)
 
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
     })
@@ -97,7 +102,7 @@ module.exports = ({
           content = content.replace(/###StoreHashPassword###/g, StoreHashPassword)
           content = content.replace(/###UpdateHashPassword###/g, UpdateHashPassword)
         } else {
-          content = removeLines(content, [1, 18, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59, 88])
+          content = removeLines(content, [1, 18, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59, 102])
         }
         writeFile(relativePath.replace('user.js', `${resource.resourceSingular}.js`), content)
       })
@@ -134,10 +139,20 @@ module.exports = ({
     resources.forEach(resource => {
       const StoreBodyRules = resource.fields.filter(requiredFieldsRule)
         .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}.required()`).join(`,${os.EOL}`)
-      const UpdateBodyRules = resource.fields.filter(isNormalField)
-        .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}`).join(`,${os.EOL}`)
       let content = resourcesValidatorStubContent.replace(/###StoreBodyRules###/g, StoreBodyRules)
+
+      const UpdateBodyParticles = resource.fields.filter(isNormalField)
+        .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}`)
+
+      const UpdateBodyRules = UpdateBodyParticles.map(particle => `${particle}.required()`).join(`,${os.EOL}`)
       content = content.replace(/###UpdateBodyRules###/g, UpdateBodyRules)
+
+      const PartialUpdateBodyRules = UpdateBodyParticles.join(`,${os.EOL}`)
+      content = content.replace(/###PartialUpdateBodyRules###/g, PartialUpdateBodyRules)
+      
+      const BulkUpdateBodyRules = UpdateBodyParticles.map(particle => `${addTabs(1)}${particle}`).join(`,${os.EOL}`)
+      content = content.replace(/###BulkUpdateBodyRules###/g, BulkUpdateBodyRules)
+
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
     })
   }
@@ -181,13 +196,13 @@ module.exports = ({
 
     const hasResources = resources.length > 0
     if (!hasAuthentication && !hasResources) {
-      content = removeLines(content, [5, 8, 10, 19, 24, 25, 26, 30])
+      content = removeLines(content, [6, 9, 11, 20, 25, 26, 27, 31])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
     } else if (!hasAuthentication) {
-      content = removeLines(content, [5, 8, 24, 25, 26])
+      content = removeLines(content, [6, 9, 25, 26, 27])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config, mysqlClient }) => {')
     } else if (!hasResources) {
-      content = removeLines(content, [10, 19, 30])
+      content = removeLines(content, [11, 20, 31])
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config }) => {')
     } else {
       content = content.replace(/###MethodHeader###/g, 'module.exports = ({ config, mysqlClient }) => {')

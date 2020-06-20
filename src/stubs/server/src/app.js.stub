@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const fs = require('fs')
 const morgan = require('morgan')
 const path = require('path')
+const validate = require('express-validation')
 const passport = require('passport')
 const swaggerJSDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
@@ -46,6 +47,10 @@ const setupAccessLogs = (app) => {
     res.sendStatus(404)
   })
   app.use((err, req, res, next) => {
+    if (err instanceof validate.ValidationError) {
+      console.error('Request validation error:', err)
+      return res.status(422).json(err)
+    }
     console.error('Internal server error', err)
     if(err.status) {
       return res.status(err.status).json({description: err.errors}).end()

@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { bulkUpdateCriteriaObject } = require('./common')
 
 module.exports = {
   store: {
@@ -9,6 +10,19 @@ module.exports = {
   update: {
     body: {
 ###UpdateBodyRules###
+    }
+  }
+  partialUpdate: {
+    body: {
+###PartialUpdateBodyRules###
+    }
+  },
+  bulkUpdate: {
+    body: {
+      criteria: Joi.array().items(bulkUpdateCriteriaObject),
+      set: Joi.object({
+###BulkUpdateBodyRules###
+      })
     }
   }
 }

@@ -83,6 +83,65 @@ module.exports = (###resourceSingular###Repository) => {
   })
 
   /**
+   * Partially update resources matching criteria
+   * @swagger
+   * /api/###resourcePlural###:
+   *   put:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: Partially update ###resourcePlural### matching criteria
+   *     summary: Partially updates all existing ###resourcePlural### matching criteria
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: body
+   *         in: body
+   *         schema:
+   *           type: object
+   *           properties:
+   *             criteria:
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   field:
+   *                     type: string
+   *                   op:
+   *                     type: string
+   *                   value:
+   *                     type: string
+   *             set:
+   *               type: object
+   *         required:
+   *           - criteria
+   *           - set
+   *     responses:
+   *       204:
+   *         description: No content
+   *       401:
+   *         description: Not authorized to access this resource
+   *       422:
+   *         description: Unprocessable entity
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.patch('/', validate(validationRules.bulkUpdate), async (req, res) => {
+    try {
+      const result = await ###resourceSingular###Repository.bulkUpdate(req.body)
+      if (result.affectedRows === 1) {
+        return res.sendStatus(204)
+      }
+      return res.sendStatus(404)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  /**
    * Show an existing resource
    * @swagger
    * /api/###resourcePlural###/{id}:
@@ -150,6 +209,8 @@ module.exports = (###resourceSingular###Repository) => {
    *           type: object
    *           properties:
 ###ResourceProperties###
+   *         required:
+###AllRequiredResourceProperties###
    *       - name: id
    *         in: path
    *         schema:
@@ -179,7 +240,59 @@ module.exports = (###resourceSingular###Repository) => {
       return res.sendStatus(500)
     }
   })
-    
+
+  /**
+   * Partially update an existing resource
+   * @swagger
+   * /api/###resourcePlural###/{id}:
+   *   put:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: Partially update ###resourceSingular###
+   *     summary: Partially updates an existing ###resourceSingular###
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: body
+   *         in: body
+   *         schema:
+   *           type: object
+   *           properties:
+###ResourceProperties###
+   *       - name: id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - id
+   *     responses:
+   *       204:
+   *         description: No content
+   *       401:
+   *         description: Not authorized to access this resource
+   *       404:
+   *         description: Not found
+   *       422:
+   *         description: Unprocessable entity
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.patch('/:id', validate(validationRules.partialUpdate), async (req, res) => {
+    try {
+      const result = await ###resourceSingular###Repository.update(req.params.id, req.body)
+      if (result.affectedRows === 1) {
+        return res.sendStatus(204)
+      }
+      return res.sendStatus(404)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
   /**
    * Destroy an existing resource
    * @swagger
