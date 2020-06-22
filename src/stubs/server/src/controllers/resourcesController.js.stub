@@ -86,7 +86,7 @@ module.exports = (###resourceSingular###Repository) => {
    * Partially update resources matching criteria
    * @swagger
    * /api/###resourcePlural###:
-   *   put:
+   *   patch:
    *     tags:
    *       - ###ResourcePlural###
    *     name: Partially update ###resourcePlural### matching criteria
@@ -245,7 +245,7 @@ module.exports = (###resourceSingular###Repository) => {
    * Partially update an existing resource
    * @swagger
    * /api/###resourcePlural###/{id}:
-   *   put:
+   *   patch:
    *     tags:
    *       - ###ResourcePlural###
    *     name: Partially update ###resourceSingular###
