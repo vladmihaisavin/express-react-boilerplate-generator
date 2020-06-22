@@ -37,8 +37,10 @@ export function getStepDescription(step) {
     case 4:
       return 'Please input the database table name for the authenticable resource:'
     case 5:
-      return 'Please update the resources as you seem fit:'
+      return 'Please set up the tables with bulk update:'
     case 6:
+      return 'Please update the resources as you seem fit:'
+    case 7:
       return 'Start generating the boilerplate'
     default:
       return 'Unknown step'

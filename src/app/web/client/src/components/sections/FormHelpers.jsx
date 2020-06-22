@@ -24,8 +24,10 @@ export function getStepForm(step, projectDetails, setProjectDetails, setNextDisa
     case 4:
       return <AuthenticableResourceTableSelect data={{ projectDetails, setProjectDetails }}/>
     case 5:
-      return <ResourcesEditor data={{ projectDetails, setProjectDetails, setNextDisabledFor }}/>
+      return <BulkUpdateEditor data={{ projectDetails, setProjectDetails, setNextDisabledFor }}/>
     case 6:
+      return <ResourcesEditor data={{ projectDetails, setProjectDetails, setNextDisabledFor }}/>
+    case 7:
     default:
       return
   }
@@ -202,11 +204,11 @@ function AuthenticableResourceTableSelect(props) {
   )
 }
 
-function ResourcesEditor(props) {
+function BulkUpdateEditor(props) {
   const { projectDetails, setProjectDetails, setNextDisabledFor } = props.data
-  const [resourcesString, setResourcesString] = useState(JSON.stringify(projectDetails.resources, undefined, 2))
+  const [bulkUpdateFieldsString, setBulkUpdateFieldsString] = useState(JSON.stringify(generateBulkUpdateObjectStub(projectDetails.resources), undefined, 2))
   const [isValidJsonFormat, setIsValidJsonFormat] = useState(true)
-  const classes = makeStyles((theme) => ({
+  const editorClasses = makeStyles((theme) => ({
     jsonEditor: {
       width: '50ch'
     },
@@ -217,10 +219,6 @@ function ResourcesEditor(props) {
       alignItems: 'center'
     }
   }))()
-  
-  useEffect(() => {
-    console.log(projectDetails)
-  }, [projectDetails])
 
   useEffect(() => {
     setNextDisabledFor((prevValues) => {
@@ -229,6 +227,92 @@ function ResourcesEditor(props) {
         nextDisabledFor.add(5)
       } else {
         nextDisabledFor.delete(5)
+      }
+      return nextDisabledFor
+    })
+  }, [isValidJsonFormat, setNextDisabledFor])
+
+  return (
+    <FormControl className={editorClasses.formControl}>
+      <TextField
+        className={editorClasses.jsonEditor}
+        id="bulk-update-fields-editor"
+        label="Bulk Update Fields JSON"
+        multiline
+        rows={30}
+        defaultValue={bulkUpdateFieldsString}
+        variant="filled"
+        onChange={(e) => setBulkUpdateFieldsString(e.target.value)}
+        onKeyDown={(e) => { if (e.keyCode === 9) e.preventDefault() }}
+      />
+      <div className={editorClasses.button}>
+        <Button variant="contained"  color="primary" onClick={saveJsonFile}>Validate JSON</Button>
+        {
+          displayActionFeedback(isValidJsonFormat)
+        }
+      </div>
+    </FormControl>
+  )
+
+  function saveJsonFile() {
+    try {
+      const bulkUpdateFieldsObject = JSON.parse(bulkUpdateFieldsString)
+      setProjectDetails({
+        ...projectDetails,
+        resources: generateResources(projectDetails.resources, bulkUpdateFieldsObject)
+      })
+      setIsValidJsonFormat(true)
+    } catch (err) {
+      if(err.name === 'SyntaxError') {
+        console.log('could not parse JSON file')
+        setIsValidJsonFormat(false)
+      }
+    }
+  }
+
+  function generateResources (originalResources, bulkUpdateFieldsObject) {
+    return originalResources.map(originalResource => ({
+      ...originalResource,
+      bulkUpdateFields: bulkUpdateFieldsObject.hasOwnProperty(originalResource.tableName) ? bulkUpdateFieldsObject[originalResource.tableName] : []
+    }))
+  }
+
+  function generateBulkUpdateObjectStub (resources) {
+    return resources.reduce((acc, resource) => {
+      acc[resource.tableName] = [
+        {
+          field: 'fieldName',
+          defaultValue: 'defaultValue'
+        }
+      ]
+      return acc
+    }, {})
+  }
+}
+
+function ResourcesEditor(props) {
+  const { projectDetails, setProjectDetails, setNextDisabledFor } = props.data
+  const [resourcesString, setResourcesString] = useState(JSON.stringify(projectDetails.resources, undefined, 2))
+  const [isValidJsonFormat, setIsValidJsonFormat] = useState(true)
+  const editorClasses = makeStyles((theme) => ({
+    jsonEditor: {
+      width: '50ch'
+    },
+    button: {
+      marginTop: theme.spacing(2),
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center'
+    }
+  }))()
+
+  useEffect(() => {
+    setNextDisabledFor((prevValues) => {
+      const nextDisabledFor = new Set(prevValues.values())
+      if (isValidJsonFormat === false) {
+        nextDisabledFor.add(6)
+      } else {
+        nextDisabledFor.delete(6)
       }
       return nextDisabledFor
     })
@@ -250,9 +334,9 @@ function ResourcesEditor(props) {
     }
   }
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl className={editorClasses.formControl}>
       <TextField
-        className={classes.jsonEditor}
+        className={editorClasses.jsonEditor}
         id="resources-editor"
         label="Resources JSON"
         multiline
@@ -262,7 +346,7 @@ function ResourcesEditor(props) {
         onChange={(e) => setResourcesString(e.target.value)}
         onKeyDown={(e) => { if (e.keyCode === 9) e.preventDefault() }}
       />
-      <div className={classes.button}>
+      <div className={editorClasses.button}>
         <Button variant="contained"  color="primary" onClick={saveJsonFile}>Validate JSON</Button>
         {
           displayActionFeedback(isValidJsonFormat)

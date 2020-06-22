@@ -148,7 +148,8 @@ module.exports = ({
           }
           return properties
         }),
-        formFields: fillableFields.map(extractFieldName)
+        formFields: fillableFields.map(extractFieldName),
+        bulkUpdateFields: resource.bulkUpdateFields
       }
 
       writeFile(relativePath.replace('userResource.json', `${resource.resourceSingular}Resource.json`), JSON.stringify(resourceObject))

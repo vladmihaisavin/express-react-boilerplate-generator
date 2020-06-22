@@ -18,5 +18,11 @@
     //"email",
     //"type",
     //"password"
+  ],
+  "bulkUpdateFields": [
+    //{
+    //  "field": "type",
+    //  "defaultValue": "guest"
+    //}
   ]
 }

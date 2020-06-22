@@ -48,10 +48,10 @@ const setupAccessLogs = (app) => {
   })
   app.use((err, req, res, next) => {
     if (err instanceof validate.ValidationError) {
-      console.error('Request validation error:', err)
+      console.error('Request validation error:', JSON.stringify(err))
       return res.status(422).json(err)
     }
-    console.error('Internal server error', err)
+    console.error('Internal server error', JSON.stringify(err))
     if(err.status) {
       return res.status(err.status).json({description: err.errors}).end()
     }

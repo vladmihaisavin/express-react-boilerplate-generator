@@ -15,7 +15,7 @@ import Preloader from '../reusable/Preloader.jsx'
 import httpClient from '../../services/httpClient'
 
 function getSteps() {
-  return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Resources', 'Generate']
+  return ['Project Name', 'Authentication', 'Database Type', 'Database Credentials', 'Auth Resource Table', 'Bulk Updates Setup', 'Resources', 'Generate']
 }
 
 const DEFAULT_PROJECT_DETAILS = {
@@ -121,20 +121,14 @@ function Dashboard(props) {
       setProjectDetails({
         ...projectDetails,
         databaseType: 'none',
-        databaseCredentials: {
-          host: '127.0.0.1',
-          port: '3307',
-          user: 'myUser',
-          password: 'asd123',
-          database: 'test_db'
-        },
-        authenticableResourceTable: 'users'
+        databaseCredentials: DEFAULT_PROJECT_DETAILS.databaseCredentials,
+        authenticableResourceTable: DEFAULT_PROJECT_DETAILS.authenticableResourceTable
       })
     }
 
     setActiveStep((prevActiveStep) => {
       if (dbSelectionSkipped) {
-        return 6
+        return steps.length - 1
       }
       return prevActiveStep + 1
     })
@@ -142,7 +136,7 @@ function Dashboard(props) {
       const newSkipped = new Set(prevSkipped.values())
       newSkipped.add(activeStep)
       if (dbSelectionSkipped) {
-        newSkipped.add(3).add(4).add(5)
+        newSkipped.add(3).add(4).add(5).add(6)
       }
       return newSkipped
     })
