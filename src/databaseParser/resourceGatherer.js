@@ -16,6 +16,7 @@ module.exports = (dbClient) => async () => {
 
   for (const table of tables) {
     const description = (await dbClient.describeTable(table)).results
+    const keyColumnUsages = (await dbClient.query(`SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME='${table}'`)).results
     const resourceInformation = {
       tableName: table,
       resourceSingular: pluralize.singular(camelCase(table)),
@@ -24,15 +25,34 @@ module.exports = (dbClient) => async () => {
       ResourcePlural: pluralize.plural(camelCase(table, {pascalCase: true})),
       fields: []
     }
+    let foreignKeyNo = 0
     for (const RowDataPacket of description) {
-      resourceInformation.fields.push({
+      const field = {
         name: RowDataPacket.Field,
         type: RowDataPacket.Type,
         nullable: RowDataPacket.Null === 'YES',
         key: RowDataPacket.Key,
         default: RowDataPacket.Default,
         extra: RowDataPacket.Extra
-      })
+      }
+      if (field.key === 'MUL') {
+        keyColumnUsage = keyColumnUsages.filter(item => item.COLUMN_NAME === field.name)
+        if (keyColumnUsage.length > 0) {
+          field.foreignKeyDetails = {
+            referencedTableName: keyColumnUsage[0].REFERENCED_TABLE_NAME,
+            referencedColumnName: keyColumnUsage[0].REFERENCED_COLUMN_NAME
+          }
+        }
+        foreignKeyNo++
+      }
+      resourceInformation.fields.push(field)
+    }
+    if (foreignKeyNo === 2) {
+      resourceInformation.tableType = 'pivot'
+    } else if (foreignKeyNo === 0) {
+      resourceInformation.tableType = 'normal'
+    } else {
+      resourceInformation.tableType = 'connected'
     }
     resources.push(resourceInformation)
   }
