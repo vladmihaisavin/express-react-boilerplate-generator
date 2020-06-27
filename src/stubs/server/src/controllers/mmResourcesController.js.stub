@@ -1,6 +1,5 @@
 const { Router } = require('express')
 const validate = require('express-validation')
-const validationRules = require('../validation/###resourcePlural###')
 
 module.exports = (###resourceSingular###Repository) => {
   const app = new Router()
@@ -79,7 +78,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.patch('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', validate(validationRules.partialUpdate), async (req, res) => {
+  app.patch('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', async (req, res) => {
     try {
       const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {
@@ -131,7 +130,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.patch('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', validate(validationRules.partialUpdate), async (req, res) => {
+  app.patch('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', async (req, res) => {
     try {
       const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {

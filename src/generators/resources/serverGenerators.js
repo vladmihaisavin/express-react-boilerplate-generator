@@ -173,23 +173,25 @@ module.exports = ({
     const resourcesValidatorStubContent = readStub(relativePath.replace('users.js', 'resourcesValidator.js'))
     const databaseTypesInterpreter = databaseTypesInterpreters.joi[databaseType]
     resources.forEach(resource => {
-      const StoreBodyRules = resource.fields.filter(requiredFieldsRule)
-        .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}.required()`).join(`,${os.EOL}`)
-      let content = resourcesValidatorStubContent.replace(/###StoreBodyRules###/g, StoreBodyRules)
+      if (resource.tableType !== 'pivot') {
+        const StoreBodyRules = resource.fields.filter(requiredFieldsRule)
+          .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}.required()`).join(`,${os.EOL}`)
+        let content = resourcesValidatorStubContent.replace(/###StoreBodyRules###/g, StoreBodyRules)
 
-      const UpdateBodyParticles = resource.fields.filter(isFillableField)
-        .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}`)
+        const UpdateBodyParticles = resource.fields.filter(isFillableField)
+          .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}`)
 
-      const UpdateBodyRules = UpdateBodyParticles.map(particle => `${particle}.required()`).join(`,${os.EOL}`)
-      content = content.replace(/###UpdateBodyRules###/g, UpdateBodyRules)
+        const UpdateBodyRules = UpdateBodyParticles.map(particle => `${particle}.required()`).join(`,${os.EOL}`)
+        content = content.replace(/###UpdateBodyRules###/g, UpdateBodyRules)
 
-      const PartialUpdateBodyRules = UpdateBodyParticles.join(`,${os.EOL}`)
-      content = content.replace(/###PartialUpdateBodyRules###/g, PartialUpdateBodyRules)
-      
-      const BulkUpdateBodyRules = UpdateBodyParticles.map(particle => `${addTabs(1)}${particle}`).join(`,${os.EOL}`)
-      content = content.replace(/###BulkUpdateBodyRules###/g, BulkUpdateBodyRules)
+        const PartialUpdateBodyRules = UpdateBodyParticles.join(`,${os.EOL}`)
+        content = content.replace(/###PartialUpdateBodyRules###/g, PartialUpdateBodyRules)
+        
+        const BulkUpdateBodyRules = UpdateBodyParticles.map(particle => `${addTabs(1)}${particle}`).join(`,${os.EOL}`)
+        content = content.replace(/###BulkUpdateBodyRules###/g, BulkUpdateBodyRules)
 
-      writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
+        writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
+      }
     })
   }
 
