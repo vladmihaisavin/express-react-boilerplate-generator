@@ -6,7 +6,7 @@ const { generateSimpleFilterObject, generateBulkFilterObject, prepareResults } =
 module.exports = (mysqlClient) => {
   const list = async () => {
     try {
-      return prepareResults(await mysqlClient.list(###resourceSingular###Model.tableName, ###resourceSingular###Model.fields.projection))
+      return prepareResults(await mysqlClient.list(###resourceSingular###Model.tableName, ###resourceSingular###Model.fields.projection)###urlForResources###)
     } catch (err) {
       console.error(err)
       throw err
@@ -32,7 +32,7 @@ module.exports = (mysqlClient) => {
         ###resourceSingular###Model.tableName,
         generateSimpleFilterObject(['id'], [id]),
         ###resourceSingular###Model.fields.projection
-      ))
+      )###urlForResources###)
     } catch (err) {
       console.error(err)
       throw err

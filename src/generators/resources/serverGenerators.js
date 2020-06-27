@@ -128,6 +128,17 @@ module.exports = ({
           } else {
             content = removeLines(content, [1, 18, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59, 102])
           }
+          let urlForResources = ''
+          if (resource.tableType === 'connected') {
+            const urlForResourcesArray = []
+            resource.fields.forEach(field => {
+              if (field.hasOwnProperty(foreignKeyDetails)) {
+                urlForResourcesArray.push(`{ key: '${field.name}', slug: '${field.foreignKeyDetails.resourcePlural}' }`)
+              }
+            })
+            urlForResources = `, [${urlForResourcesArray.join(', ')}]`
+          }
+          content = content.replace(/###urlForResources###/g, urlForResources)
         }
         writeFile(relativePath.replace('user.js', `${resource.resourceSingular}.js`), content)
       })
