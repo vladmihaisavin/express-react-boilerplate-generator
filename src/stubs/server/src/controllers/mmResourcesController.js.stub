@@ -1,0 +1,247 @@
+const { Router } = require('express')
+const validate = require('express-validation')
+const validationRules = require('../validation/###resourcePlural###')
+
+module.exports = (###resourceSingular###Repository) => {
+  const app = new Router()
+
+  /**
+   * List all resources
+   * @swagger
+   * /api/###resourcePlural###:
+   *   get:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: List ###resourcePlural###
+   *     summary: Lists all the ###resourcePlural###
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     responses:
+   *       200:
+   *         description: An array of ###resourcePlural### objects
+   *       401:
+   *         description: Not authorized to access this resource
+   *       422:
+   *         description: Unprocessable entity
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.get('/###resourcePlural###', async (req, res) => {
+    try {
+      const ###resourcePlural### = await ###resourceSingular###Repository.list()
+      return res.status(200).json(###resourcePlural###)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  /**
+   * Insert or update an existing resource
+   * @swagger
+   * /api/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}:
+   *   patch:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: Bind resources
+   *     summary: Bind a ###referencedResourceSingular2### resource type to a ###referencedResourceSingular1### resource type
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: ###referencedResourceSingular1###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular1###Id
+   *       - name: ###referencedResourceSingular2###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular2###Id
+   *     responses:
+   *       204:
+   *         description: No content
+   *       401:
+   *         description: Not authorized to access this resource
+   *       404:
+   *         description: Not found
+   *       422:
+   *         description: Unprocessable entity
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.patch('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', validate(validationRules.partialUpdate), async (req, res) => {
+    try {
+      const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
+      if (result.affectedRows === 1) {
+        return res.sendStatus(204)
+      }
+      return res.sendStatus(404)
+    } catch (err) {
+      return res.sendStatus(500) 
+    }
+  })
+
+  /**
+   * Insert or update an existing resource
+   * @swagger
+   * /api/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}:
+   *   patch:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: Bind resources
+   *     summary: Bind a ###referencedResourceSingular1### resource type to a ###referencedResourceSingular2### resource type
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: ###referencedResourceSingular2###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular2###Id
+   *       - name: ###referencedResourceSingular1###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular1###Id
+   *     responses:
+   *       204:
+   *         description: No content
+   *       401:
+   *         description: Not authorized to access this resource
+   *       404:
+   *         description: Not found
+   *       422:
+   *         description: Unprocessable entity
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.patch('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', validate(validationRules.partialUpdate), async (req, res) => {
+    try {
+      const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
+      if (result.affectedRows === 1) {
+        return res.sendStatus(204)
+      }
+      return res.sendStatus(404)
+    } catch (err) {
+      return res.sendStatus(500) 
+    }
+  })
+
+  /**
+   * Destroy an existing resource
+   * @swagger
+   * /api/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}:
+   *   delete:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: Unbind resources
+   *     summary: Unbind a ###referencedResourceSingular2### resource type from a ###referencedResourceSingular1### resource type
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: ###referencedResourceSingular1###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular1###Id
+   *       - name: ###referencedResourceSingular2###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular2###Id
+   *     responses:
+   *       204:
+   *         description: No content
+   *       401:
+   *         description: Not authorized to access this resource
+   *       404:
+   *         description: Not found
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.delete('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', async (req, res) => {
+    try {
+      const result = await ###resourceSingular###Repository.destroy(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
+      if (result.affectedRows === 1) {
+        return res.sendStatus(204)
+      }
+      return res.sendStatus(404)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  /**
+   * Destroy an existing resource
+   * @swagger
+   * /api/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}:
+   *   delete:
+   *     tags:
+   *       - ###ResourcePlural###
+   *     name: Unbind resources
+   *     summary: Unbind a ###referencedResourceSingular1### resource type from a ###referencedResourceSingular2### resource type
+   *     security:
+   *       - bearerAuth: []
+   *     consumes:
+   *       - application/json
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *       - name: ###referencedResourceSingular2###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular2###Id
+   *       - name: ###referencedResourceSingular1###Id
+   *         in: path
+   *         schema:
+   *           type: string
+   *         required:
+   *           - ###referencedResourceSingular1###Id
+   *     responses:
+   *       204:
+   *         description: No content
+   *       401:
+   *         description: Not authorized to access this resource
+   *       404:
+   *         description: Not found
+   *       500:
+   *         description: Internal Server Error
+   */
+  app.delete('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', async (req, res) => {
+    try {
+      const result = await ###resourceSingular###Repository.destroy(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
+      if (result.affectedRows === 1) {
+        return res.sendStatus(204)
+      }
+      return res.sendStatus(404)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  })
+
+  return app
+}

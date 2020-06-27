@@ -2,7 +2,7 @@ const { Router } = require('express')
 const validate = require('express-validation')
 const validationRules = require('../validation/###resourcePlural###')
 
-module.exports = (###resourceSingular###Repository) => {
+module.exports = (###resourcePlural###Repository) => {
   const app = new Router()
 
   /**

@@ -5,7 +5,7 @@ const { addSpaces, addTabs, removeLines } = require('../../helpers/fileFormattin
 const { MYSQL_TYPES_TO_JOI, MYSQL_TYPES_TO_SWAGGER, reconstructRawType } = require('../../databaseParser/mysqlInterpreter')
 const {
   extractFieldName,
-  isNormalField,
+  isFillableField,
   requiredFieldsRule,
   optionalFieldsRule
 } = require('./commonMethods')
@@ -37,6 +37,7 @@ module.exports = ({
 
   const generateResourcesControllers = (relativePath) => {
     const resourcesControllerStubContent = readStub(relativePath.replace('users.js', 'resourcesController.js'))
+    const mmResourcesControllerStubContent = readStub(relativePath.replace('users.js', 'mmResourcesController.js'))
     const databaseTypesInterpreter = databaseTypesInterpreters.swagger[databaseType]
     const getResourcePropertyTypes = (field) => {
       const fieldDetails = databaseTypesInterpreter[field.type]
@@ -50,25 +51,38 @@ module.exports = ({
     }
 
     resources.forEach(resource => {
-      let content = resourcesControllerStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
-      content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
-      content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+      let content
+      if (resource.tableType === 'pivot') {
+        content = mmResourcesControllerStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
+        content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
+        content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
 
-      const ResourceProperties = resource.fields.filter(isNormalField).map(field => {
-        return `${addTabs(1)} *${addSpaces(13)}${field.name}:${os.EOL}${getResourcePropertyTypes(field)}`
-      }).join(os.EOL)
-      content = content.replace(/###ResourceProperties###/g, ResourceProperties)
-      
-      const RequiredResourceProperties = resource.fields.filter(requiredFieldsRule).map(field => {
-        return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
-      }).join(os.EOL)
-      content = content.replace(/###RequiredResourceProperties###/g, RequiredResourceProperties)
-      
-      const AllRequiredResourceProperties = resource.fields.filter(isNormalField).map(field => {
-        return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
-      }).join(os.EOL)
-      content = content.replace(/###AllRequiredResourceProperties###/g, AllRequiredResourceProperties)
-
+        resource.fields.forEach((field, idx) => {
+          if (field.key === 'MUL') {
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            content = content.replace(new RegExp(`###referencedResourcePlural${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourcePlural)
+          }
+        })
+      } else {
+        content = resourcesControllerStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
+        content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
+        content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+  
+        const ResourceProperties = resource.fields.filter(isFillableField).map(field => {
+          return `${addTabs(1)} *${addSpaces(13)}${field.name}:${os.EOL}${getResourcePropertyTypes(field)}`
+        }).join(os.EOL)
+        content = content.replace(/###ResourceProperties###/g, ResourceProperties)
+        
+        const RequiredResourceProperties = resource.fields.filter(requiredFieldsRule).map(field => {
+          return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
+        }).join(os.EOL)
+        content = content.replace(/###RequiredResourceProperties###/g, RequiredResourceProperties)
+        
+        const AllRequiredResourceProperties = resource.fields.filter(isFillableField).map(field => {
+          return `${addTabs(1)} *${addSpaces(11)}- ${field.name}`
+        }).join(os.EOL)
+        content = content.replace(/###AllRequiredResourceProperties###/g, AllRequiredResourceProperties)
+      }
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
     })
   }
@@ -91,18 +105,29 @@ module.exports = ({
   const generateResourceRepositories = (relativePath) => {
     if (databaseType) {
       const resourceRepositoryStubContent = readStub(relativePath.replace('user.js', path.join(databaseType, 'resourceRepository.js')))
+      const mmResourceRepositoryStubContent = readStub(relativePath.replace('user.js', path.join(databaseType, 'mmResourceRepository.js')))
       resources.forEach(resource => {
-        let content = resourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
-
-        if (resource.tableName === authenticableResourceTableName) {
-          const HashPasswordImport = `const { hashPassword } = require('../helpers/bcrypt')`
-          const StoreHashPassword = `${addTabs(3)}body.password = await hashPassword(body.password)`
-          const UpdateHashPassword = `${addTabs(3)}if (body.password) {${os.EOL}${addTabs(4)}body.password = await hashPassword(body.password)${os.EOL}${addTabs(3)}}${os.EOL}`
-          content = content.replace(/###HashPasswordImport###/g, HashPasswordImport)
-          content = content.replace(/###StoreHashPassword###/g, StoreHashPassword)
-          content = content.replace(/###UpdateHashPassword###/g, UpdateHashPassword)
+        let content
+        if (resource.tableType === 'pivot') {
+          content = mmResourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
+          resource.fields.forEach((field, idx) => {
+            if (field.key === 'MUL') {
+              content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            }
+          })
         } else {
-          content = removeLines(content, [1, 18, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59, 102])
+          content = resourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
+
+          if (resource.tableName === authenticableResourceTableName) {
+            const HashPasswordImport = `const { hashPassword } = require('../helpers/bcrypt')`
+            const StoreHashPassword = `${addTabs(3)}body.password = await hashPassword(body.password)`
+            const UpdateHashPassword = `${addTabs(3)}if (body.password) {${os.EOL}${addTabs(4)}body.password = await hashPassword(body.password)${os.EOL}${addTabs(3)}}${os.EOL}`
+            content = content.replace(/###HashPasswordImport###/g, HashPasswordImport)
+            content = content.replace(/###StoreHashPassword###/g, StoreHashPassword)
+            content = content.replace(/###UpdateHashPassword###/g, UpdateHashPassword)
+          } else {
+            content = removeLines(content, [1, 18, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59, 102])
+          }
         }
         writeFile(relativePath.replace('user.js', `${resource.resourceSingular}.js`), content)
       })
@@ -141,7 +166,7 @@ module.exports = ({
         .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}.required()`).join(`,${os.EOL}`)
       let content = resourcesValidatorStubContent.replace(/###StoreBodyRules###/g, StoreBodyRules)
 
-      const UpdateBodyParticles = resource.fields.filter(isNormalField)
+      const UpdateBodyParticles = resource.fields.filter(isFillableField)
         .map(field => `${addTabs(3)}${field.name}: Joi${databaseTypesInterpreter[field.type]}`)
 
       const UpdateBodyRules = UpdateBodyParticles.map(particle => `${particle}.required()`).join(`,${os.EOL}`)
@@ -159,12 +184,15 @@ module.exports = ({
 
   const generateRoutes = (relativePath) => {
     let content = readStub(relativePath)
-    
+
     if (hasAuthentication) {
       const authenticableResourceName = pluralize.singular(authenticableResourceTableName)
-      const AuthRoutes = `${addTabs(1)}app.use('/auth', auth({ config, ${authenticableResourceName}Repository: repositories.${authenticableResourceName} }))`
+      const AuthRoutes = [
+        `${addTabs(1)}app.use('/auth', auth({ config, ${authenticableResourceName}Repository: repositories.${authenticableResourceName} }))`,
+        `${addTabs(1)}app.use(authenticate)`
+      ].join(os.EOL)
       const AuthControllerImport = `const auth = require('./controllers/auth')`
-      content = content.replace(/###AuthRoutes###/g, AuthRoutes)
+      content = content.replace(/###AuthRoutes###/g, `${AuthRoutes}${os.EOL}`)
       content = content.replace(/###AuthControllerImport###/g, AuthControllerImport)
     } else {
       content = removeLines(content, [2, 3, 13])
@@ -175,11 +203,15 @@ module.exports = ({
         return `const ${resource.resourcePlural} = require('./controllers/${resource.resourcePlural}')`
       }).join(os.EOL)
       content = content.replace(/###ResourceControllerImports###/g, ResourceControllerImports)
-      
-      const ResourceRoutes = resources.map(resource => {
-        return `${addTabs(1)}app.use('/${resource.resourcePlural}', ${hasAuthentication ? 'authenticate, ' : ''}${resource.resourcePlural}(repositories.${resource.resourceSingular}))`
+
+      const NormalResourceRoutes = resources.map(resource => {
+        return `${addTabs(1)}app.use('/${resource.resourcePlural}', ${resource.resourcePlural}(repositories.${resource.resourceSingular}))`
       }).join(os.EOL)
-      content = content.replace(/###ResourceRoutes###/g, ResourceRoutes)
+      const PivotResourceRoutes = resources.filter(resource => resource.tableType === 'pivot').map(resource => {
+        return `${addTabs(1)}app.use(${resource.resourcePlural}(repositories.${resource.resourceSingular}))`
+      }).join(os.EOL)
+
+      content = content.replace(/###ResourceRoutes###/g, [NormalResourceRoutes, PivotResourceRoutes].join(`${os.EOL}${os.EOL}`))
     } else {
       if (hasAuthentication) {
         content = removeLines(content, [4, 14])

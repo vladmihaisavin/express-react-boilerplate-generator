@@ -1,0 +1,68 @@
+const ###resourceSingular###Model = require('../models/###resourceSingular###.json')
+const { getCurrentTimestamp } = require('../helpers/moment')
+const { generateSimpleFilterObject, prepareResults } = require('../helpers/mysqlClient')
+
+module.exports = (mysqlClient) => {
+  const list = async () => {
+    try {
+      return prepareResults(await mysqlClient.list(###resourceSingular###Model.tableName, ###resourceSingular###Model.fields.projection))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const insertOrUpdate = async (###referencedResourceSingular1###Id, ###referencedResourceSingular2###Id) => {
+    try {
+      const filterObject = generateSimpleFilterObject(['###referencedResourceSingular1###_id', '###referencedResourceSingular2###_id'], [###referencedResourceSingular1###Id, ###referencedResourceSingular2###Id])
+      const existingRecord = prepareResults(await mysqlClient.fetch(
+        ###resourceSingular###Model.tableName,
+        filterObject
+      ))
+      const now = getCurrentTimestamp()
+      const body = {
+        ###referencedResourceSingular1###_id: ###referencedResourceSingular1###Id,
+        ###referencedResourceSingular2###_id: ###referencedResourceSingular2###Id
+      }
+      if (###resourceSingular###Model.fields.projection.includes('updatedAt')) {
+        body.updatedAt = now
+      }
+      if (existingRecord.length > 0) {
+        return prepareResults(await mysqlClient.update(
+          ###resourceSingular###Model.tableName,
+          body,
+          filterObject
+        ))
+      } else {
+        if (###resourceSingular###Model.fields.projection.includes('createdAt')) {
+          body.createdAt = now
+        }
+        return prepareResults(await mysqlClient.store(
+          ###resourceSingular###Model.tableName,
+          body
+        ))
+      }
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const destroy = async (###referencedResourceSingular1###Id, ###referencedResourceSingular2###Id) => {
+    try {
+      return prepareResults(await mysqlClient.destroy(
+        ###resourceSingular###Model.tableName,
+        generateSimpleFilterObject(['###referencedResourceSingular1###_id', '###referencedResourceSingular2###_id'], [###referencedResourceSingular1###Id, ###referencedResourceSingular2###Id])
+      ))
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  return {
+    list,
+    insertOrUpdate,
+    destroy
+  }
+}

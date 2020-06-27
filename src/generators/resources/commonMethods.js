@@ -1,12 +1,12 @@
 
 const extractFieldName = field => field.name
-const isNormalField = field => !field.key
-const requiredFieldsRule = field => field.nullable === false && isNormalField(field)
-const optionalFieldsRule = field => field.nullable && isNormalField(field)
+const isFillableField = field => !field.key || field.key !== 'MUL'
+const requiredFieldsRule = field => field.nullable === false && isFillableField(field)
+const optionalFieldsRule = field => field.nullable && isFillableField(field)
 
 module.exports = {
   extractFieldName,
-  isNormalField,
+  isFillableField,
   requiredFieldsRule,
   optionalFieldsRule
 }

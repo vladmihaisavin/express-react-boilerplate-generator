@@ -1,6 +1,14 @@
 const camelCase = require('camelcase')
 const pluralize = require('pluralize')
 
+const generateTableResourceNames = (tableName) => ({
+  tableName,
+  resourceSingular: pluralize.singular(camelCase(tableName)),
+  resourcePlural: pluralize.plural(camelCase(tableName)),
+  ResourceSingular: pluralize.singular(camelCase(tableName, {pascalCase: true})),
+  ResourcePlural: pluralize.plural(camelCase(tableName, {pascalCase: true}))
+})
+
 module.exports = (dbClient) => async () => {
   const getTableNames = async (dbClient) => {
     return (await dbClient.listTables())
@@ -18,11 +26,7 @@ module.exports = (dbClient) => async () => {
     const description = (await dbClient.describeTable(table)).results
     const keyColumnUsages = (await dbClient.query(`SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME='${table}'`)).results
     const resourceInformation = {
-      tableName: table,
-      resourceSingular: pluralize.singular(camelCase(table)),
-      resourcePlural: pluralize.plural(camelCase(table)),
-      ResourceSingular: pluralize.singular(camelCase(table, {pascalCase: true})),
-      ResourcePlural: pluralize.plural(camelCase(table, {pascalCase: true})),
+      ...generateTableResourceNames(table),
       fields: []
     }
     let foreignKeyNo = 0
@@ -39,8 +43,8 @@ module.exports = (dbClient) => async () => {
         keyColumnUsage = keyColumnUsages.filter(item => item.COLUMN_NAME === field.name)
         if (keyColumnUsage.length > 0) {
           field.foreignKeyDetails = {
-            referencedTableName: keyColumnUsage[0].REFERENCED_TABLE_NAME,
-            referencedColumnName: keyColumnUsage[0].REFERENCED_COLUMN_NAME
+            ...generateTableResourceNames(keyColumnUsage[0].REFERENCED_TABLE_NAME),
+            columnName: keyColumnUsage[0].REFERENCED_COLUMN_NAME
           }
         }
         foreignKeyNo++
@@ -49,6 +53,8 @@ module.exports = (dbClient) => async () => {
     }
     if (foreignKeyNo === 2) {
       resourceInformation.tableType = 'pivot'
+      resourceInformation.resourceSingular = resourceInformation.resourcePlural
+      resourceInformation.ResourceSingular = resourceInformation.ResourcePlural
     } else if (foreignKeyNo === 0) {
       resourceInformation.tableType = 'normal'
     } else {
