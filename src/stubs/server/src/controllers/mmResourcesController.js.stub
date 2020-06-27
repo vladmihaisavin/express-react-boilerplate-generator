@@ -42,7 +42,7 @@ module.exports = (###resourceSingular###Repository) => {
    * Insert or update an existing resource
    * @swagger
    * /api/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}:
-   *   patch:
+   *   put:
    *     tags:
    *       - ###ResourcePlural###
    *     name: Bind resources
@@ -78,7 +78,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.patch('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', async (req, res) => {
+  app.put('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', async (req, res) => {
     try {
       const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {
@@ -94,7 +94,7 @@ module.exports = (###resourceSingular###Repository) => {
    * Insert or update an existing resource
    * @swagger
    * /api/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}:
-   *   patch:
+   *   put:
    *     tags:
    *       - ###ResourcePlural###
    *     name: Bind resources
@@ -130,7 +130,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.patch('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', async (req, res) => {
+  app.put('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', async (req, res) => {
     try {
       const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {
