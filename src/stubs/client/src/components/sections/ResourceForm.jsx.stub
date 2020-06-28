@@ -22,10 +22,10 @@ function ###ResourceSingular###Form(props) {
         default:
           break
       }
-      props.history.push('/###resourcePlural###')
+      props.history.push('/###resourceSlug###')
     },
     cancelButtonClicked: () => {
-      props.history.push('/###resourcePlural###')
+      props.history.push('/###resourceSlug###')
     }
   }
 

@@ -1,8 +1,10 @@
 const camelCase = require('camelcase')
+const decamelize = require('decamelize')
 const pluralize = require('pluralize')
 
 const generateTableResourceNames = (tableName) => ({
   tableName,
+  resourceSlug: decamelize(pluralize.plural(camelCase(tableName)), '-'),
   resourceSingular: pluralize.singular(camelCase(tableName)),
   resourcePlural: pluralize.plural(camelCase(tableName)),
   ResourceSingular: pluralize.singular(camelCase(tableName, {pascalCase: true})),

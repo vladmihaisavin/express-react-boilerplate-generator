@@ -2,13 +2,13 @@ const { Router } = require('express')
 const validate = require('express-validation')
 const validationRules = require('../validation/###resourcePlural###')
 
-module.exports = (###resourcePlural###Repository) => {
+module.exports = (###resourceSingular###Repository) => {
   const app = new Router()
 
   /**
    * List all resources
    * @swagger
-   * /api/###resourcePlural###:
+   * /api/###resourceSlug###:
    *   get:
    *     tags:
    *       - ###ResourcePlural###
@@ -42,7 +42,7 @@ module.exports = (###resourcePlural###Repository) => {
   /**
    * Create a new resource
    * @swagger
-   * /api/###resourcePlural###:
+   * /api/###resourceSlug###:
    *   post:
    *     tags:
    *       - ###ResourcePlural###
@@ -85,7 +85,7 @@ module.exports = (###resourcePlural###Repository) => {
   /**
    * Partially update resources matching criteria
    * @swagger
-   * /api/###resourcePlural###:
+   * /api/###resourceSlug###:
    *   patch:
    *     tags:
    *       - ###ResourcePlural###
@@ -144,7 +144,7 @@ module.exports = (###resourcePlural###Repository) => {
   /**
    * Show an existing resource
    * @swagger
-   * /api/###resourcePlural###/{id}:
+   * /api/###resourceSlug###/{id}:
    *   get:
    *     tags:
    *       - ###ResourcePlural###
@@ -190,7 +190,7 @@ module.exports = (###resourcePlural###Repository) => {
   /**
    * Update an existing resource
    * @swagger
-   * /api/###resourcePlural###/{id}:
+   * /api/###resourceSlug###/{id}:
    *   put:
    *     tags:
    *       - ###ResourcePlural###
@@ -244,7 +244,7 @@ module.exports = (###resourcePlural###Repository) => {
   /**
    * Partially update an existing resource
    * @swagger
-   * /api/###resourcePlural###/{id}:
+   * /api/###resourceSlug###/{id}:
    *   patch:
    *     tags:
    *       - ###ResourcePlural###
@@ -296,7 +296,7 @@ module.exports = (###resourcePlural###Repository) => {
   /**
    * Destroy an existing resource
    * @swagger
-   * /api/###resourcePlural###/{id}:
+   * /api/###resourceSlug###/{id}:
    *   delete:
    *     tags:
    *       - ###ResourcePlural###

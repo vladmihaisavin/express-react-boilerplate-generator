@@ -1,17 +1,17 @@
 import httpClient from './httpClient'
 
 export async function createResource(body) {
-  return httpClient.post('/###resourcePlural###', body)
+  return httpClient.post('/###resourceSlug###', body)
 }
 
 export async function bulkUpdateResource(body) {
-  return httpClient.patch('/###resourcePlural###', body)
+  return httpClient.patch('/###resourceSlug###', body)
 }
 
 export async function partialUpdateResource(###resourceSingular###Id, body) {
-  return httpClient.patch(`/###resourcePlural###/${###resourceSingular###Id}`, body)
+  return httpClient.patch(`/###resourceSlug###/${###resourceSingular###Id}`, body)
 }
 
 export async function deleteResource(###resourceSingular###Id) {
-  return httpClient.delete(`/###resourcePlural###/${###resourceSingular###Id}`)
+  return httpClient.delete(`/###resourceSlug###/${###resourceSingular###Id}`)
 }

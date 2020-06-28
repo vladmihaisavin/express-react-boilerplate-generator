@@ -56,17 +56,19 @@ module.exports = ({
         content = mmResourcesControllerStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
         content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
         content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+        content = content.replace(/###resourceSlug###/g, resource.resourceSlug)
 
         resource.fields.forEach((field, idx) => {
           if (field.key === 'MUL') {
             content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
-            content = content.replace(new RegExp(`###referencedResourcePlural${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourcePlural)
+            content = content.replace(new RegExp(`###referencedResourceSlug${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSlug)
           }
         })
       } else {
         content = resourcesControllerStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
         content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
         content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+        content = content.replace(/###resourceSlug###/g, resource.resourceSlug)
   
         const ResourceProperties = resource.fields.filter(isFillableField).map(field => {
           return `${addTabs(1)} *${addSpaces(13)}${field.name}:${os.EOL}${getResourcePropertyTypes(field)}`
@@ -132,7 +134,7 @@ module.exports = ({
           if (resource.tableType === 'connected') {
             const urlForResourcesArray = []
             resource.fields.forEach(field => {
-              if (field.hasOwnProperty(field.foreignKeyDetails)) {
+              if (field.hasOwnProperty('foreignKeyDetails')) {
                 urlForResourcesArray.push(`{ key: '${field.name}', slug: '${field.foreignKeyDetails.resourcePlural}' }`)
               }
             })
@@ -218,7 +220,7 @@ module.exports = ({
       content = content.replace(/###ResourceControllerImports###/g, ResourceControllerImports)
 
       const NormalResourceRoutes = resources.map(resource => {
-        return `${addTabs(1)}app.use('/${resource.resourcePlural}', ${resource.resourcePlural}(repositories.${resource.resourceSingular}))`
+        return `${addTabs(1)}app.use('/${resource.resourceSlug}', ${resource.resourcePlural}(repositories.${resource.resourceSingular}))`
       }).join(os.EOL)
       const PivotResourceRoutes = resources.filter(resource => resource.tableType === 'pivot').map(resource => {
         return `${addTabs(1)}app.use(${resource.resourcePlural}(repositories.${resource.resourceSingular}))`

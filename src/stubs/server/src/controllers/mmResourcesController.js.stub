@@ -6,7 +6,7 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * List all resources
    * @swagger
-   * /api/###resourcePlural###:
+   * /api/###resourceSlug###:
    *   get:
    *     tags:
    *       - ###ResourcePlural###
@@ -28,7 +28,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.get('/###resourcePlural###', async (req, res, next) => {
+  app.get('/###resourceSlug###', async (req, res, next) => {
     try {
       const ###resourcePlural### = await ###resourceSingular###Repository.list()
       return res.status(200).json(###resourcePlural###)
@@ -40,7 +40,7 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Insert or update an existing resource
    * @swagger
-   * /api/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}:
+   * /api/###referencedResourceSlug1###/{###referencedResourceSingular1###Id}/###referencedResourceSlug2###/{###referencedResourceSingular2###Id}:
    *   put:
    *     tags:
    *       - ###ResourcePlural###
@@ -77,7 +77,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.put('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', async (req, res, next) => {
+  app.put('/###referencedResourceSlug1###/:###referencedResourceSingular1###Id/###referencedResourceSlug2###/:###referencedResourceSingular2###Id', async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {
@@ -92,7 +92,7 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Insert or update an existing resource
    * @swagger
-   * /api/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}:
+   * /api/###referencedResourceSlug2###/{###referencedResourceSingular2###Id}/###referencedResourceSlug1###/{###referencedResourceSingular1###Id}:
    *   put:
    *     tags:
    *       - ###ResourcePlural###
@@ -129,7 +129,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.put('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', async (req, res, next) => {
+  app.put('/###referencedResourceSlug2###/:###referencedResourceSingular2###Id/###referencedResourceSlug1###/:###referencedResourceSingular1###Id', async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.insertOrUpdate(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {
@@ -144,7 +144,7 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Destroy an existing resource
    * @swagger
-   * /api/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}:
+   * /api/###referencedResourceSlug1###/{###referencedResourceSingular1###Id}/###referencedResourceSlug2###/{###referencedResourceSingular2###Id}:
    *   delete:
    *     tags:
    *       - ###ResourcePlural###
@@ -179,7 +179,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.delete('/###referencedResourcePlural1###/:###referencedResourceSingular1###Id/###referencedResourcePlural2###/:###referencedResourceSingular2###Id', async (req, res, next) => {
+  app.delete('/###referencedResourceSlug1###/:###referencedResourceSingular1###Id/###referencedResourceSlug2###/:###referencedResourceSingular2###Id', async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.destroy(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {
@@ -194,7 +194,7 @@ module.exports = (###resourceSingular###Repository) => {
   /**
    * Destroy an existing resource
    * @swagger
-   * /api/###referencedResourcePlural2###/{###referencedResourceSingular2###Id}/###referencedResourcePlural1###/{###referencedResourceSingular1###Id}:
+   * /api/###referencedResourceSlug2###/{###referencedResourceSingular2###Id}/###referencedResourceSlug1###/{###referencedResourceSingular1###Id}:
    *   delete:
    *     tags:
    *       - ###ResourcePlural###
@@ -229,7 +229,7 @@ module.exports = (###resourceSingular###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.delete('/###referencedResourcePlural2###/:###referencedResourceSingular2###Id/###referencedResourcePlural1###/:###referencedResourceSingular1###Id', async (req, res, next) => {
+  app.delete('/###referencedResourceSlug2###/:###referencedResourceSingular2###Id/###referencedResourceSlug1###/:###referencedResourceSingular1###Id', async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.destroy(req.params.###referencedResourceSingular1###Id, req.params.###referencedResourceSingular2###Id)
       if (result.affectedRows === 1) {

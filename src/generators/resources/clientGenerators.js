@@ -42,9 +42,9 @@ module.exports = ({
     content = content.replace(/###ResourceComponentsImport###/g, ResourceComponentsImport)
 
     const ResourceRoutes = resources.map(resource => {
-      const ResourceListRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}" component={withLayout(${resource.ResourcePlural})} />`
-      const ResourceNewRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}/new" component={withLayout(${resource.ResourceSingular}Form)} action='create' />`
-      const ResourceEditRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourcePlural}/edit/:${resource.resourceSingular}Id" component={withLayout(${resource.ResourceSingular}Form)} action='update' />`
+      const ResourceListRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}" component={withLayout(${resource.ResourcePlural})} />`
+      const ResourceNewRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}/new" component={withLayout(${resource.ResourceSingular}Form)} action='create' />`
+      const ResourceEditRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}/edit/:${resource.resourceSingular}Id" component={withLayout(${resource.ResourceSingular}Form)} action='update' />`
       return `${ResourceListRoute}${os.EOL}${ResourceNewRoute}${os.EOL}${ResourceEditRoute}`
     }).join(os.EOL)
     content = content.replace(/###ResourceRoutes###/g, ResourceRoutes)
@@ -69,6 +69,7 @@ module.exports = ({
       let content = resourceFormSectionStubContent.replace(/###ResourceSingular###/g, resource.ResourceSingular)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
       content = content.replace(/###resourcePlural###/g, resource.resourcePlural)
+      content = content.replace(/###resourceSlug###/g, resource.resourceSlug)
       
       writeFile(relativePath.replace('UserForm.jsx', `${resource.ResourceSingular}Form.jsx`), content)
     })
@@ -94,7 +95,7 @@ module.exports = ({
 
     if (resources.length > 0) {
       const ResourceObjects = resources.map(resource => {
-        return `${addTabs(3)}{ id: '${resource.ResourcePlural}', icon: <PeopleIcon />, active: true, url: '/${resource.resourcePlural}' }`
+        return `${addTabs(3)}{ id: '${resource.ResourcePlural}', icon: <PeopleIcon />, active: true, url: '/${resource.resourceSlug}' }`
       }).join(`,${os.EOL}`)
       content = content.replace(/###ResourceObjects###/g, ResourceObjects)
     } else {
@@ -108,7 +109,7 @@ module.exports = ({
   const generateResourcesServices = (relativePath) => {
     const resourcesServiceStubContent = readStub(relativePath.replace('users.js', 'resources.js'))
     resources.forEach(resource => {
-      let content = resourcesServiceStubContent.replace(/###resourcePlural###/g, resource.resourcePlural)
+      let content = resourcesServiceStubContent.replace(/###resourceSlug###/g, resource.resourceSlug)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
       
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
@@ -122,7 +123,7 @@ module.exports = ({
       const fillableFields = requiredFields.concat(optionalFields)
       const resourceObject = {
         resourceName: resource.resourceSingular,
-        resourceUrl: resource.resourcePlural,
+        resourceUrl: resource.resourceSlug,
         listProperties: fillableFields.map((field, idx) => {
           const properties = {
             id: field.name,
