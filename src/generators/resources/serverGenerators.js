@@ -132,7 +132,7 @@ module.exports = ({
           if (resource.tableType === 'connected') {
             const urlForResourcesArray = []
             resource.fields.forEach(field => {
-              if (field.hasOwnProperty(foreignKeyDetails)) {
+              if (field.hasOwnProperty(field.foreignKeyDetails)) {
                 urlForResourcesArray.push(`{ key: '${field.name}', slug: '${field.foreignKeyDetails.resourcePlural}' }`)
               }
             })

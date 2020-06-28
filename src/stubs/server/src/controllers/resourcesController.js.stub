@@ -30,12 +30,12 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.get('/', async (req, res) => {
+  app.get('/', async (req, res, next) => {
     try {
       const ###resourcePlural### = await ###resourceSingular###Repository.list()
       return res.status(200).json(###resourcePlural###)
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 
@@ -73,12 +73,12 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.post('/', validate(validationRules.store), async (req, res) => {
+  app.post('/', validate(validationRules.store), async (req, res, next) => {
     try {
       const results = await ###resourceSingular###Repository.store(req.body)
       return res.status(201).json({ id: results.insertId })
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 
@@ -129,7 +129,7 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.patch('/', validate(validationRules.bulkUpdate), async (req, res) => {
+  app.patch('/', validate(validationRules.bulkUpdate), async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.bulkUpdate(req.body)
       if (result.affectedRows > 0) {
@@ -137,7 +137,7 @@ module.exports = (###resourcePlural###Repository) => {
       }
       return res.sendStatus(404)
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 
@@ -175,7 +175,7 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.get('/:id', async (req, res) => {
+  app.get('/:id', async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.getById(req.params.id)
       if (result.length > 0) {
@@ -183,7 +183,7 @@ module.exports = (###resourcePlural###Repository) => {
       }
       return res.sendStatus(404)
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 
@@ -229,7 +229,7 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.put('/:id', validate(validationRules.update), async (req, res) => {
+  app.put('/:id', validate(validationRules.update), async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.update(req.params.id, req.body)
       if (result.affectedRows === 1) {
@@ -237,7 +237,7 @@ module.exports = (###resourcePlural###Repository) => {
       }
       return res.sendStatus(404)
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 
@@ -281,7 +281,7 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.patch('/:id', validate(validationRules.partialUpdate), async (req, res) => {
+  app.patch('/:id', validate(validationRules.partialUpdate), async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.update(req.params.id, req.body)
       if (result.affectedRows === 1) {
@@ -289,7 +289,7 @@ module.exports = (###resourcePlural###Repository) => {
       }
       return res.sendStatus(404)
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 
@@ -325,7 +325,7 @@ module.exports = (###resourcePlural###Repository) => {
    *       500:
    *         description: Internal Server Error
    */
-  app.delete('/:id', async (req, res) => {
+  app.delete('/:id', async (req, res, next) => {
     try {
       const result = await ###resourceSingular###Repository.destroy(req.params.id)
       if (result.affectedRows === 1) {
@@ -333,7 +333,7 @@ module.exports = (###resourcePlural###Repository) => {
       }
       return res.sendStatus(404)
     } catch (err) {
-      return res.sendStatus(500)
+      next(err)
     }
   })
 

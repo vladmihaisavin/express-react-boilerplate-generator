@@ -51,7 +51,7 @@ const setupAccessLogs = (app) => {
       console.error('Request validation error:', JSON.stringify(err))
       return res.status(422).json(err)
     }
-    console.error('Internal server error', JSON.stringify(err))
+    console.error('Internal server error', err.stack)
     if(err.status) {
       return res.status(err.status).json({description: err.errors}).end()
     }
