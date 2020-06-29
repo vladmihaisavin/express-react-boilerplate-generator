@@ -43,9 +43,11 @@ module.exports = ({
 
     const ResourceRoutes = resources.map(resource => {
       const ResourceListRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}" component={withLayout(${resource.ResourcePlural})} />`
-      const ResourceNewRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}/new" component={withLayout(${resource.ResourceSingular}Form)} action='create' />`
-      const ResourceEditRoute = `${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}/edit/:${resource.resourceSingular}Id" component={withLayout(${resource.ResourceSingular}Form)} action='update' />`
-      return `${ResourceListRoute}${os.EOL}${ResourceNewRoute}${os.EOL}${ResourceEditRoute}`
+      const ResourceNewRoute = `${os.EOL}${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}/new" component={withLayout(${resource.ResourceSingular}Form)} action='create' />`
+      const ResourceEditRoute = resource.tableType !== 'pivot'
+        ? `${os.EOL}${addTabs(3)}<${routeType} exact path="/${resource.resourceSlug}/edit/:${resource.resourceSingular}Id" component={withLayout(${resource.ResourceSingular}Form)} action='update' />`
+        : ''
+      return `${ResourceListRoute}${ResourceNewRoute}${ResourceEditRoute}`
     }).join(os.EOL)
     content = content.replace(/###ResourceRoutes###/g, ResourceRoutes)
 
@@ -61,7 +63,7 @@ module.exports = ({
         content = mmResourcesSectionStubContent
         resource.fields.forEach((field, idx) => {
           if (field.key === 'MUL') {
-            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx }###`, 'g'), field.foreignKeyDetails.resourceSingular)
           }
         })
       } else {
@@ -85,7 +87,7 @@ module.exports = ({
         content = mmResourceFormSectionStubContent
         resource.fields.forEach((field, idx) => {
           if (field.key === 'MUL') {
-            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx }###`, 'g'), field.foreignKeyDetails.resourceSingular)
           }
         })
       } else {
@@ -141,8 +143,8 @@ module.exports = ({
         content = mmResourcesServiceStubContent
         resource.fields.forEach((field, idx) => {
           if (field.key === 'MUL') {
-            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
-            content = content.replace(new RegExp(`###referencedResourceSlug${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSlug)
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            content = content.replace(new RegExp(`###referencedResourceSlug${ idx }###`, 'g'), field.foreignKeyDetails.resourceSlug)
           }
         })
       } else {
@@ -174,19 +176,9 @@ module.exports = ({
           }
           return properties
         }),
-        formProperties: fillableFields.map(field => {
-          const properties = {
-            id: field.name,
-            label: camelCase(field.name, {pascalCase: true})
-          }
-          if (field.name.includes('password')) {
-            properties.type = 'password'
-          }
-          if (field.name.includes('date') || field.type === 'timestamp') {
-            properties.type = 'datetime-local'
-          }
-          return properties
-        }),
+        formProperties: requiredFields
+          .map(field => formPropertyCallback(field, true))
+          .concat(optionalFields.map(field => formPropertyCallback(field, false))),
         formFields: fillableFields.map(extractFieldName),
         bulkUpdateFields: resource.bulkUpdateFields,
         tableType: resource.tableType
@@ -194,6 +186,26 @@ module.exports = ({
 
       writeFile(relativePath.replace('userResource.json', `${resource.resourceSingular}Resource.json`), JSON.stringify(resourceObject))
     })
+
+    function formPropertyCallback (field, required) {
+      const properties = {
+        id: field.name,
+        label: camelCase(field.name, {pascalCase: true}),
+        required
+      }
+      if (field.name.includes('password')) {
+        properties.type = 'password'
+      }
+      if (field.name.includes('date') || field.type === 'timestamp') {
+        properties.type = 'datetime-local'
+      }
+      if (field.hasOwnProperty('foreignKeyDetails')) {
+        properties.type = 'select'
+        properties.slug = field.foreignKeyDetails.resourceSlug
+        properties.itemLabel = resources.find(item => item.tableName === field.foreignKeyDetails.tableName).fields[1].name
+      }
+      return properties
+    }
   }
 
   const generatePackageJson = (relativePath) => {

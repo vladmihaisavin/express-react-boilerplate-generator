@@ -60,8 +60,8 @@ module.exports = ({
 
         resource.fields.forEach((field, idx) => {
           if (field.key === 'MUL') {
-            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
-            content = content.replace(new RegExp(`###referencedResourceSlug${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSlug)
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            content = content.replace(new RegExp(`###referencedResourceSlug${ idx }###`, 'g'), field.foreignKeyDetails.resourceSlug)
           }
         })
       } else {
@@ -114,7 +114,7 @@ module.exports = ({
           content = mmResourceRepositoryStubContent.replace(/###resourceSingular###/g, resource.resourceSingular)
           resource.fields.forEach((field, idx) => {
             if (field.key === 'MUL') {
-              content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+              content = content.replace(new RegExp(`###referencedResourceSingular${ idx }###`, 'g'), field.foreignKeyDetails.resourceSingular)
             }
           })
         } else {
