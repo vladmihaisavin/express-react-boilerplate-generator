@@ -54,19 +54,45 @@ module.exports = ({
 
   const generateResourcesSections = (relativePath) => {
     const resourcesSectionStubContent = readStub(relativePath.replace('Users.jsx', 'Resources.jsx'))
+    const mmResourcesSectionStubContent = readStub(relativePath.replace('Users.jsx', 'mmResources.jsx'))
     resources.forEach(resource => {
-      let content = resourcesSectionStubContent.replace(/###ResourcePlural###/g, resource.ResourcePlural)
+      let content
+      if (resource.tableType === 'pivot') {
+        content = mmResourcesSectionStubContent
+        resource.fields.forEach((field, idx) => {
+          if (field.key === 'MUL') {
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+          }
+        })
+      } else {
+        content = resourcesSectionStubContent
+      }
+
+      content = content.replace(/###ResourcePlural###/g, resource.ResourcePlural)
       content = content.replace(/###resourcePlural###/g, resource.resourcePlural)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
-      
+
       writeFile(relativePath.replace('Users.jsx', `${resource.ResourcePlural}.jsx`), content)
     })
   }
 
   const generateResourceFormSections = (relativePath) => {
     const resourceFormSectionStubContent = readStub(relativePath.replace('UserForm.jsx', 'ResourceForm.jsx'))
+    const mmResourceFormSectionStubContent = readStub(relativePath.replace('UserForm.jsx', 'mmResourceForm.jsx'))
     resources.forEach(resource => {
-      let content = resourceFormSectionStubContent.replace(/###ResourceSingular###/g, resource.ResourceSingular)
+      let content
+      if (resource.tableType === 'pivot') {
+        content = mmResourceFormSectionStubContent
+        resource.fields.forEach((field, idx) => {
+          if (field.key === 'MUL') {
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+          }
+        })
+      } else {
+        content = resourceFormSectionStubContent
+      }
+
+      content = content.replace(/###ResourceSingular###/g, resource.ResourceSingular)
       content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
       content = content.replace(/###resourcePlural###/g, resource.resourcePlural)
       content = content.replace(/###resourceSlug###/g, resource.resourceSlug)
@@ -108,9 +134,21 @@ module.exports = ({
 
   const generateResourcesServices = (relativePath) => {
     const resourcesServiceStubContent = readStub(relativePath.replace('users.js', 'resources.js'))
+    const mmResourcesServiceStubContent = readStub(relativePath.replace('users.js', 'mmResources.js'))
     resources.forEach(resource => {
-      let content = resourcesServiceStubContent.replace(/###resourceSlug###/g, resource.resourceSlug)
-      content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+      let content
+      if (resource.tableType === 'pivot') {
+        content = mmResourcesServiceStubContent
+        resource.fields.forEach((field, idx) => {
+          if (field.key === 'MUL') {
+            content = content.replace(new RegExp(`###referencedResourceSingular${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSingular)
+            content = content.replace(new RegExp(`###referencedResourceSlug${ idx + 1 }###`, 'g'), field.foreignKeyDetails.resourceSlug)
+          }
+        })
+      } else {
+        content = resourcesServiceStubContent.replace(/###resourceSlug###/g, resource.resourceSlug)
+        content = content.replace(/###resourceSingular###/g, resource.resourceSingular)
+      }
       
       writeFile(relativePath.replace('users.js', `${resource.resourcePlural}.js`), content)
     })
@@ -150,7 +188,8 @@ module.exports = ({
           return properties
         }),
         formFields: fillableFields.map(extractFieldName),
-        bulkUpdateFields: resource.bulkUpdateFields
+        bulkUpdateFields: resource.bulkUpdateFields,
+        tableType: resource.tableType
       }
 
       writeFile(relativePath.replace('userResource.json', `${resource.resourceSingular}Resource.json`), JSON.stringify(resourceObject))

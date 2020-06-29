@@ -1,0 +1,40 @@
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+import ResourceForm from '../structure/ResourceForm.jsx'
+import { useLoadResource } from '../../services/loadResourceHook'
+import { resourceName, resourceUrl, formProperties, formFields } from '../../static/###resourceSingular###Resource.json'
+import { createResource } from '../../services/###resourcePlural###'
+import { sanitizeBody } from '../../helpers'
+
+function ###ResourceSingular###Form(props) {
+  const resourceId = props.match.params.###resourceSingular###Id
+  const [data, loading] = useLoadResource(`${resourceUrl}/${resourceId}`, !!resourceId)
+
+  const actions = {
+    saveButtonClicked: async (resourceBody) => {
+      switch(props.action) {
+        case 'create':
+          const sanitizedBody = sanitizeBody(resourceBody)
+          await createResource(sanitizedBody.###referencedResourceSingular1###_id, sanitizedBody.###referencedResourceSingular2###_id)
+          break
+        default:
+          break
+      }
+      props.history.push('/###resourceSlug###')
+    },
+    cancelButtonClicked: () => {
+      props.history.push('/###resourceSlug###')
+    }
+  }
+
+  return (
+    <ResourceForm 
+      customProps={{ actions, resourceName, formProperties, formFields }}
+      action={props.action}
+      oldResource={data || {}}
+      loading={loading}
+    />
+  )
+}
+
+export default withRouter(###ResourceSingular###Form)

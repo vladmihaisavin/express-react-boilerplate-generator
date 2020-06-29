@@ -1,0 +1,9 @@
+import httpClient from './httpClient'
+
+export async function createResource(###referencedResourceSingular1###Id, ###referencedResourceSingular2###Id) {
+  return httpClient.put(`/###referencedResourceSlug1###/${###referencedResourceSingular1###Id}/###referencedResourceSlug2###/${###referencedResourceSingular2###Id}`)
+}
+
+export async function deleteResource(###referencedResourceSingular1###Id, ###referencedResourceSingular2###Id) {
+  return httpClient.delete(`/###referencedResourceSlug1###/${###referencedResourceSingular1###Id}/###referencedResourceSlug2###/${###referencedResourceSingular2###Id}`)
+}
