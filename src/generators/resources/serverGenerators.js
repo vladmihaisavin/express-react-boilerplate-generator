@@ -135,7 +135,7 @@ module.exports = ({
             const urlForResourcesArray = []
             resource.fields.forEach(field => {
               if (field.hasOwnProperty('foreignKeyDetails')) {
-                urlForResourcesArray.push(`{ key: '${field.name}', slug: '${field.foreignKeyDetails.resourcePlural}' }`)
+                urlForResourcesArray.push(`{ key: '${field.name}', slug: '${field.foreignKeyDetails.resourceSlug}' }`)
               }
             })
             urlForResources = `, [${urlForResourcesArray.join(', ')}]`
