@@ -189,7 +189,7 @@ function AuthenticableResourceTableSelect(props) {
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel id="auth-resource-select-label">Database Type</InputLabel>
+      <InputLabel id="auth-resource-select-label">Table name</InputLabel>
       <Select
         labelId="auth-resource-select-label"
         id="authenticableResourceTable"
